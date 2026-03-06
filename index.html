@@ -1390,7 +1390,7 @@
             originalCanvas.classList.remove('selecting');
         });
 
-      processBtn.addEventListener('click', () => {
+processBtn.addEventListener('click', () => {
     if (!originalImage || !selection) return;
     
     if(userPlan === 'free') {
@@ -1419,16 +1419,42 @@
             height: Math.floor(selection.height)
         };
         
-        // Crear máscara de bordes para proteger las manos
+        // DETECTAR COLOR DE FONDO (para texto)
+        let bgR = 0, bgG = 0, bgB = 0, bgCount = 0;
+        
+        // Muestrear bordes del área para encontrar color de fondo
+        for (let y = area.y; y <= area.y + area.height; y++) {
+            for (let x = area.x; x <= area.x + area.width; x++) {
+                // Solo bordes
+                if (y === area.y || y === area.y + area.height || 
+                    x === area.x || x === area.x + area.width) {
+                    const i = (y * tempCanvas.width + x) * 4;
+                    bgR += data[i];
+                    bgG += data[i + 1];
+                    bgB += data[i + 2];
+                    bgCount++;
+                }
+            }
+        }
+        
+        if (bgCount > 0) {
+            bgR = Math.floor(bgR / bgCount);
+            bgG = Math.floor(bgG / bgCount);
+            bgB = Math.floor(bgB / bgCount);
+        }
+        
+        // Tolerancia para texto (más baja = más preciso)
+        const tolerance = 40;
+        
+        // Crear máscara de bordes para proteger objetos
         const edgeMask = new Uint8Array(area.width * area.height);
         
-        // Detectar bordes dentro del área (donde están las manos)
+        // Detectar bordes
         for (let y = area.y; y < area.y + area.height; y++) {
             for (let x = area.x; x < area.x + area.width; x++) {
                 const i = (y * tempCanvas.width + x) * 4;
                 const maskIdx = (y - area.y) * area.width + (x - area.x);
                 
-                // Calcular diferencia con vecinos para detectar bordes
                 if (x > area.x && x < area.x + area.width - 1 && 
                     y > area.y && y < area.y + area.height - 1) {
                     
@@ -1445,49 +1471,60 @@
                                         Math.abs(data[top+1] - data[bottom+1]) + 
                                         Math.abs(data[top+2] - data[bottom+2]);
                     
-                    // Si hay mucho cambio, es un borde (mano)
-                    if (diffHorizontal > 100 || diffVertical > 100) {
-                        edgeMask[maskIdx] = 1; // Marcar como borde a proteger
+                    if (diffHorizontal > 80 || diffVertical > 80) {
+                        edgeMask[maskIdx] = 1;
                     }
                 }
             }
         }
         
-        // Aplicar relleno respetando bordes
+        // Aplicar relleno
         for (let y = area.y; y < area.y + area.height; y++) {
             for (let x = area.x; x < area.x + area.width; x++) {
                 const maskIdx = (y - area.y) * area.width + (x - area.x);
                 
-                // Si es un borde (mano), mantener original
+                // Si es borde, mantener original
                 if (edgeMask[maskIdx] === 1) continue;
                 
                 const i = (y * tempCanvas.width + x) * 4;
                 
-                let r = 0, g = 0, b = 0, totalWeight = 0;
+                // Calcular diferencia con color de fondo
+                const diffR = Math.abs(data[i] - bgR);
+                const diffG = Math.abs(data[i + 1] - bgG);
+                const diffB = Math.abs(data[i + 2] - bgB);
                 
-                // Buscar píxeles de referencia (solo de fuera del área)
-                for (let ny = Math.max(0, y - 20); ny <= Math.min(tempCanvas.height - 1, y + 20); ny++) {
-                    for (let nx = Math.max(0, x - 20); nx <= Math.min(tempCanvas.width - 1, x + 20); nx++) {
-                        if (nx < area.x || nx >= area.x + area.width || 
-                            ny < area.y || ny >= area.y + area.height) {
-                            
-                            const ni = (ny * tempCanvas.width + nx) * 4;
-                            
-                            const dist = Math.sqrt((nx - x)**2 + (ny - y)**2);
-                            const weight = 1 / (dist + 1);
-                            
-                            r += data[ni] * weight;
-                            g += data[ni + 1] * weight;
-                            b += data[ni + 2] * weight;
-                            totalWeight += weight;
+                // Si es similar al fondo o es texto, rellenar con color de fondo
+                if (diffR < tolerance || diffG < tolerance || diffB < tolerance) {
+                    data[i] = bgR;
+                    data[i + 1] = bgG;
+                    data[i + 2] = bgB;
+                } else {
+                    // Si no, rellenar con píxeles vecinos (para objetos)
+                    let r = 0, g = 0, b = 0, totalWeight = 0;
+                    
+                    for (let ny = Math.max(0, y - 15); ny <= Math.min(tempCanvas.height - 1, y + 15); ny++) {
+                        for (let nx = Math.max(0, x - 15); nx <= Math.min(tempCanvas.width - 1, x + 15); nx++) {
+                            if (nx < area.x || nx >= area.x + area.width || 
+                                ny < area.y || ny >= area.y + area.height) {
+                                
+                                const ni = (ny * tempCanvas.width + nx) * 4;
+                                
+                                const dist = Math.sqrt((nx - x)**2 + (ny - y)**2);
+                                const weight = 1 / (dist + 1);
+                                
+                                r += data[ni] * weight;
+                                g += data[ni + 1] * weight;
+                                b += data[ni + 2] * weight;
+                                totalWeight += weight;
+                            }
                         }
                     }
-                }
-                
-                if (totalWeight > 0) {
-                    data[i] = r / totalWeight;
-                    data[i + 1] = g / totalWeight;
-                    data[i + 2] = b / totalWeight;
+                    
+                    if (totalWeight > 0) {
+                        data[i] = r / totalWeight;
+                        data[i + 1] = g / totalWeight;
+                        data[i + 2] = b / totalWeight;
+                    }
                 }
             }
         }
