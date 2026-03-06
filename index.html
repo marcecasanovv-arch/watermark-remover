@@ -1444,7 +1444,7 @@ processBtn.addEventListener('click', () => {
         }
         
         // Tolerancia para texto (más baja = más preciso)
-        const tolerance = 20;
+        const tolerance = 5;
         
         // Crear máscara de bordes para proteger objetos
         const edgeMask = new Uint8Array(area.width * area.height);
@@ -1534,11 +1534,11 @@ processBtn.addEventListener('click', () => {
         resultCtx.clearRect(0, 0, resultCanvas.width, resultCanvas.height);
         resultCtx.drawImage(tempCanvas, 0, 0);
         
-        if(userPlan === 'free') {
+       # if(userPlan === 'free') {
             resultCtx.font = '20px Arial';
             resultCtx.fillStyle = 'rgba(255,255,255,0.5)';
             resultCtx.fillText('✧ VERSIÓN GRATUITA ✧', 10, resultCanvas.height - 20);
-        }
+        }#
         
         downloadBtn.style.display = 'inline-block';
         addToHistory(resultCanvas.toDataURL());
