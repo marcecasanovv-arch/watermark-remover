@@ -3,8 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Eliminador Profesional de Objetos</title>
+    <title>Eliminar Marca de Agua Gratis | Watermark Remover Pro</title>
     <style>
+        /* ===== ESTILOS GENERALES ===== */
         * {
             margin: 0;
             padding: 0;
@@ -23,7 +24,7 @@
             margin: 0 auto;
         }
 
-        /* Header con animación */
+        /* ===== HEADER ===== */
         .header {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
@@ -68,7 +69,64 @@
             box-shadow: 0 20px 60px rgba(0,0,0,0.3);
         }
 
-        /* Upload section mejorada */
+        /* ===== NAVBAR (MONETIZACIÓN) ===== */
+        .navbar {
+            background: rgba(255,255,255,0.95);
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 20px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+            border-radius: 10px;
+        }
+        
+        .logo {
+            font-size: 1.5em;
+            font-weight: bold;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .nav-links { display: flex; gap: 20px; align-items: center; }
+        .nav-link { text-decoration: none; color: #4a5568; padding: 8px 15px; border-radius: 8px; }
+        .nav-link.pro { background: linear-gradient(135deg, #f6ad55, #ed8936); color: white; }
+        
+        /* ===== ANUNCIOS ===== */
+        .ad-banner {
+            background: linear-gradient(135deg, #2d3748, #1a202c);
+            color: white;
+            padding: 15px;
+            text-align: center;
+            position: relative;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .sidebar-ads {
+            position: fixed;
+            right: 20px;
+            top: 100px;
+            width: 160px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            z-index: 100;
+        }
+        
+        .sidebar-ad {
+            background: white;
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        /* ===== UPLOAD SECTION ===== */
         .upload-section {
             border: 3px dashed #cbd5e0;
             border-radius: 20px;
@@ -120,7 +178,7 @@
             50% { transform: translateY(-10px); }
         }
 
-        /* Grid de imágenes mejorado */
+        /* ===== IMAGE GRID ===== */
         .image-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -178,7 +236,7 @@
             border-top: 2px solid #e2e8f0;
         }
 
-        /* Barra de herramientas */
+        /* ===== TOOLBAR ===== */
         .toolbar {
             display: flex;
             flex-wrap: wrap;
@@ -223,7 +281,7 @@
         .btn-danger { background: linear-gradient(135deg, #f56565 0%, #c53030 100%); }
         .btn-info { background: linear-gradient(135deg, #4299e1 0%, #2b6cb0 100%); }
 
-        /* Panel de herramientas avanzadas */
+        /* ===== ADVANCED TOOLS ===== */
         .advanced-tools {
             margin-top: 30px;
             padding: 25px;
@@ -263,6 +321,7 @@
             margin-bottom: 10px;
         }
 
+        /* ===== SLIDERS ===== */
         .slider-container {
             margin-top: 20px;
             padding: 15px;
@@ -298,7 +357,7 @@
             box-shadow: 0 2px 10px rgba(0,0,0,0.2);
         }
 
-        /* Historial */
+        /* ===== HISTORY PANEL ===== */
         .history-panel {
             margin-top: 30px;
             padding: 20px;
@@ -335,8 +394,170 @@
             height: 100%;
             object-fit: cover;
         }
-
-        /* Loading mejorado */
+                /* ===== PRICING PLANS (MONETIZACIÓN) ===== */
+        .pricing-section {
+            padding: 60px 20px;
+            background: linear-gradient(135deg, #f7fafc, #edf2f7);
+            border-radius: 20px;
+            margin-top: 40px;
+        }
+        
+        .pricing-grid {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            padding: 20px;
+        }
+        
+        .pricing-card {
+            background: white;
+            border-radius: 20px;
+            padding: 40px 30px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transition: all 0.3s;
+            position: relative;
+        }
+        
+        .pricing-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(102,126,234,0.2);
+        }
+        
+        .pricing-card.popular {
+            border: 2px solid #667eea;
+            transform: scale(1.05);
+        }
+        
+        .popular-badge {
+            position: absolute;
+            top: 20px;
+            right: -30px;
+            background: linear-gradient(135deg, #f6ad55, #ed8936);
+            color: white;
+            padding: 8px 40px;
+            transform: rotate(45deg);
+            font-size: 0.8em;
+        }
+        
+        .plan-price {
+            font-size: 2.5em;
+            color: #667eea;
+            font-weight: bold;
+            margin: 20px 0;
+        }
+        
+        .plan-features {
+            list-style: none;
+            text-align: left;
+            margin: 30px 0;
+        }
+        
+        .plan-features li {
+            padding: 10px 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .plan-features li::before {
+            content: "✓";
+            color: #48bb78;
+            font-weight: bold;
+        }
+        
+        .plan-features li.disabled::before {
+            content: "✗";
+            color: #f56565;
+        }
+        
+        .plan-btn {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            border-radius: 30px;
+            font-size: 1.1em;
+            cursor: pointer;
+            width: 100%;
+            transition: all 0.3s;
+        }
+        
+        .plan-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102,126,234,0.3);
+        }
+        
+        /* ===== FREE COUNTER ===== */
+        .free-counter {
+            background: #ebf4ff;
+            border-radius: 10px;
+            padding: 15px;
+            margin: 20px 0;
+        }
+        
+        .counter-bar {
+            width: 100%;
+            height: 10px;
+            background: #cbd5e0;
+            border-radius: 5px;
+            overflow: hidden;
+            margin: 10px 0;
+        }
+        
+        .counter-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #48bb78, #38a169);
+            transition: width 0.3s;
+        }
+        
+        /* ===== FREE TIMER ===== */
+        .free-timer {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+            z-index: 100;
+        }
+        
+        /* ===== PAYMENT MODAL ===== */
+        .payment-modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.5);
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+            backdrop-filter: blur(5px);
+        }
+        
+        .payment-content {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            max-width: 500px;
+            width: 90%;
+            animation: slideIn 0.3s;
+        }
+        
+        @keyframes slideIn {
+            from {
+                transform: translateY(-50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+        
+        /* ===== LOADING OVERLAY ===== */
         .loading-overlay {
             position: fixed;
             top: 0;
@@ -381,65 +602,8 @@
             50% { width: 70%; }
             100% { width: 100%; }
         }
-
-        /* Modal de configuración */
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0,0,0,0.5);
-            justify-content: center;
-            align-items: center;
-            z-index: 2000;
-            backdrop-filter: blur(5px);
-        }
-
-        .modal-content {
-            background: white;
-            padding: 30px;
-            border-radius: 20px;
-            max-width: 500px;
-            width: 90%;
-            max-height: 80vh;
-            overflow-y: auto;
-            animation: slideIn 0.3s;
-        }
-
-        @keyframes slideIn {
-            from {
-                transform: translateY(-50px);
-                opacity: 0;
-            }
-            to {
-                transform: translateY(0);
-                opacity: 1;
-            }
-        }
-
-        .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-            padding-bottom: 15px;
-            border-bottom: 2px solid #e2e8f0;
-        }
-
-        .close-modal {
-            font-size: 24px;
-            cursor: pointer;
-            color: #a0aec0;
-            transition: color 0.3s;
-        }
-
-        .close-modal:hover {
-            color: #f56565;
-        }
-
-        /* Badges y etiquetas */
+        
+        /* ===== BADGES ===== */
         .badge {
             display: inline-block;
             padding: 5px 10px;
@@ -453,7 +617,7 @@
         .badge-info { background: #bee3f8; color: #2c5282; }
         .badge-warning { background: #feebc8; color: #7b341e; }
 
-        /* Responsive */
+        /* ===== RESPONSIVE ===== */
         @media (max-width: 968px) {
             .image-grid {
                 grid-template-columns: 1fr;
@@ -461,6 +625,21 @@
             
             .tools-grid {
                 grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .sidebar-ads {
+                display: none;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .navbar {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .pricing-card.popular {
+                transform: scale(1);
             }
         }
 
@@ -481,14 +660,48 @@
     </style>
 </head>
 <body>
+    <!-- NAVBAR (MONETIZACIÓN) -->
+    <nav class="navbar">
+        <div class="logo">✨ Watermark Remover Pro</div>
+        <div class="nav-links">
+            <a href="#" class="nav-link">Inicio</a>
+            <a href="#pricing" class="nav-link">Precios</a>
+            <a href="#" class="nav-link pro" id="upgradeBtn">⭐ Upgrade Pro</a>
+        </div>
+    </nav>
+
+    <!-- BANNER PUBLICIDAD (MONETIZACIÓN) -->
+    <div class="ad-banner" id="adBanner">
+        <span>🔥 50% OFF en plan anual - Oferta por tiempo limitado</span>
+        <button class="close-ad" onclick="this.parentElement.style.display='none'" style="background: none; border: none; color: white; font-size: 20px; position: absolute; right: 15px; top: 50%; transform: translateY(-50%); cursor: pointer;">✕</button>
+    </div>
+
+    <!-- ANUNCIOS LATERALES (MONETIZACIÓN) -->
+    <div class="sidebar-ads" id="sidebarAds">
+        <div class="sidebar-ad">
+            <div style="font-size: 10px; color: #a0aec0; margin-bottom: 5px;">ANUNCIO</div>
+            <div style="background: linear-gradient(135deg, #667eea, #764ba2); height: 60px; border-radius: 5px; margin-bottom: 10px;"></div>
+            <p style="margin: 10px 0; font-size: 12px;">Editor de fotos Pro</p>
+            <button class="plan-btn" style="padding: 5px; font-size: 12px;">Probar</button>
+        </div>
+        <div class="sidebar-ad">
+            <div style="font-size: 10px; color: #a0aec0; margin-bottom: 5px;">ANUNCIO</div>
+            <div style="background: linear-gradient(135deg, #48bb78, #38a169); height: 60px; border-radius: 5px; margin-bottom: 10px;"></div>
+            <p style="margin: 10px 0; font-size: 12px;">Eliminar fondos</p>
+            <button class="plan-btn" style="padding: 5px; font-size: 12px;">Gratis</button>
+        </div>
+    </div>
+
+    <!-- CONTENEDOR PRINCIPAL DE LA APP -->
     <div class="container">
+        <!-- HEADER DE LA APP -->
         <div class="header">
             <h1>✨ Pro Eliminador de Objetos</h1>
             <p>Herramienta profesional para eliminar marcas de agua, textos y objetos de tus imágenes</p>
         </div>
 
         <div class="main-content">
-            <!-- Área de subida mejorada -->
+            <!-- ÁREA DE SUBIDA -->
             <div class="upload-section" id="uploadSection">
                 <div class="upload-icon">📸</div>
                 <h2 style="margin-bottom: 15px;">Arrastra y suelta tu imagen aquí</h2>
@@ -507,7 +720,7 @@
                 </div>
             </div>
 
-            <!-- Grid de imágenes -->
+            <!-- GRID DE IMÁGENES -->
             <div class="image-grid" id="imageContainer" style="display: none;">
                 <div class="image-card">
                     <div class="card-header">
@@ -556,7 +769,7 @@
                 </div>
             </div>
 
-            <!-- Barra de herramientas mejorada -->
+            <!-- BARRA DE HERRAMIENTAS -->
             <div class="toolbar" id="toolbar" style="display: none;">
                 <button class="tool-btn btn-info" id="zoomInBtn">
                     <span>🔍+</span> Zoom In
@@ -578,7 +791,7 @@
                 </button>
             </div>
 
-            <!-- Herramientas avanzadas -->
+            <!-- HERRAMIENTAS AVANZADAS -->
             <div class="advanced-tools" id="advancedTools" style="display: none;">
                 <h3 style="color: #2d3748; margin-bottom: 20px;">🛠️ Herramientas avanzadas</h3>
                 
@@ -608,7 +821,7 @@
                     </div>
                 </div>
 
-                <!-- Controles deslizantes -->
+                <!-- CONTROLES DESLIZANTES -->
                 <div class="slider-container">
                     <div class="slider-label">
                         <span>Intensidad del efecto</span>
@@ -634,7 +847,7 @@
                 </div>
             </div>
 
-            <!-- Historial de ediciones -->
+            <!-- HISTORIAL DE EDICIONES -->
             <div class="history-panel" id="historyPanel" style="display: none;">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
                     <h3 style="color: #2d3748;">📜 Historial de ediciones</h3>
@@ -644,8 +857,70 @@
                 </div>
                 <div class="history-list" id="historyList"></div>
             </div>
+                                    <!-- SECCIÓN DE PLANES (MONETIZACIÓN) -->
+            <section class="pricing-section" id="pricing">
+                <h2 style="text-align: center; font-size: 2.5em; margin-bottom: 50px;">Planes Flexibles</h2>
+                <div class="pricing-grid">
+                    <!-- Free -->
+                    <div class="pricing-card">
+                        <div class="plan-price">€0 <small>/mes</small></div>
+                        <h3>Gratis</h3>
+                        <ul class="plan-features">
+                            <li>3 ediciones/día</li>
+                            <li>Con publicidad</li>
+                            <li>Watermark en resultados</li>
+                            <li class="disabled">Herramientas avanzadas</li>
+                            <li class="disabled">Calidad HD</li>
+                        </ul>
+                        <button class="plan-btn" style="background: #a0aec0;" onclick="selectPlan('free')">Plan Actual</button>
+                    </div>
 
-            <!-- Instrucciones mejoradas -->
+                    <!-- Mensual -->
+                    <div class="pricing-card">
+                        <div class="plan-price">€9.99 <small>/mes</small></div>
+                        <h3>Pro Mensual</h3>
+                        <ul class="plan-features">
+                            <li>Ediciones ilimitadas</li>
+                            <li>Sin publicidad</li>
+                            <li>Sin watermark</li>
+                            <li>Herramientas avanzadas</li>
+                            <li>Calidad HD</li>
+                        </ul>
+                        <button class="plan-btn" onclick="selectPlan('monthly')">Seleccionar</button>
+                    </div>
+
+                    <!-- Anual (Popular) -->
+                    <div class="pricing-card popular">
+                        <div class="popular-badge">MÁS POPULAR</div>
+                        <div class="plan-price">€79.99 <small>/año</small></div>
+                        <h3>Pro Anual</h3>
+                        <ul class="plan-features">
+                            <li>Todo ilimitado</li>
+                            <li>Calidad 4K</li>
+                            <li>Soporte prioritario</li>
+                            <li>Ahorras 33%</li>
+                            <li>Actualizaciones gratis</li>
+                        </ul>
+                        <button class="plan-btn" onclick="selectPlan('yearly')">Seleccionar</button>
+                    </div>
+
+                    <!-- Pago Único -->
+                    <div class="pricing-card">
+                        <div class="plan-price">€199 <small>único</small></div>
+                        <h3>De por vida</h3>
+                        <ul class="plan-features">
+                            <li>Acceso vitalicio</li>
+                            <li>3 dispositivos</li>
+                            <li>Soporte VIP</li>
+                            <li>Feature requests</li>
+                            <li>Lo mejorcito</li>
+                        </ul>
+                        <button class="plan-btn" onclick="selectPlan('lifetime')">Seleccionar</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- INSTRUCCIONES -->
             <div class="advanced-tools" id="instructions">
                 <h3 style="color: #2d3748; margin-bottom: 20px;">📝 Guía rápida de uso</h3>
                 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px;">
@@ -674,7 +949,44 @@
         </div>
     </div>
 
-    <!-- Loading overlay mejorado -->
+    <!-- TIMER PARA FREE (MONETIZACIÓN) -->
+    <div class="free-timer" id="freeTimer">
+        <strong>Tiempo restante hoy:</strong>
+        <span id="timer">05:00</span>
+        <div style="font-size: 12px; color: #f56565; margin-top: 5px;">Actualiza a Pro para tiempo ilimitado</div>
+    </div>
+
+    <!-- MODAL DE PAGO (MONETIZACIÓN) -->
+    <div class="payment-modal" id="paymentModal">
+        <div class="payment-content">
+            <h3 style="margin-bottom: 20px;">Completar pago</h3>
+            <div class="form-group">
+                <label style="display: block; margin-bottom: 5px;">Número de tarjeta</label>
+                <input type="text" placeholder="1234 5678 9012 3456" style="width: 100%; padding: 12px; border: 2px solid #e2e8f0; border-radius: 8px;">
+            </div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 15px 0;">
+                <div>
+                    <label style="display: block; margin-bottom: 5px;">Fecha exp.</label>
+                    <input type="text" placeholder="MM/AA" style="width: 100%; padding: 12px; border: 2px solid #e2e8f0; border-radius: 8px;">
+                </div>
+                <div>
+                    <label style="display: block; margin-bottom: 5px;">CVV</label>
+                    <input type="text" placeholder="123" style="width: 100%; padding: 12px; border: 2px solid #e2e8f0; border-radius: 8px;">
+                </div>
+            </div>
+            <div class="form-group">
+                <label style="display: block; margin-bottom: 5px;">Nombre en tarjeta</label>
+                <input type="text" placeholder="Juan Pérez" style="width: 100%; padding: 12px; border: 2px solid #e2e8f0; border-radius: 8px;">
+            </div>
+            <div class="form-group">
+                <label style="display: block; margin-bottom: 5px;">Email</label>
+                <input type="email" placeholder="tu@email.com" style="width: 100%; padding: 12px; border: 2px solid #e2e8f0; border-radius: 8px;">
+            </div>
+            <button class="plan-btn" style="margin-top: 20px;" onclick="processPayment()">Pagar ahora</button>
+        </div>
+    </div>
+
+    <!-- LOADING OVERLAY -->
     <div class="loading-overlay" id="loadingOverlay">
         <div class="loading-content">
             <div style="font-size: 48px; margin-bottom: 20px;">⚙️</div>
@@ -686,71 +998,21 @@
         </div>
     </div>
 
-    <!-- Modal de configuración -->
-    <div class="modal" id="configModal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3>⚙️ Configuración avanzada</h3>
-                <span class="close-modal" id="closeModal">&times;</span>
-            </div>
-            <div style="margin-bottom: 20px;">
-                <label style="display: block; margin-bottom: 10px; font-weight: 600;">Calidad de procesamiento</label>
-                <select id="qualitySelect" style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #e2e8f0;">
-                    <option value="high">Alta (Recomendado)</option>
-                    <option value="medium">Media</option>
-                    <option value="low">Baja (Rápido)</option>
-                </select>
-            </div>
-            <div style="margin-bottom: 20px;">
-                <label style="display: block; margin-bottom: 10px; font-weight: 600;">Modo de eliminación</label>
-                <select id="modeSelect" style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #e2e8f0;">
-                    <option value="watermark">Marcas de agua</option>
-                    <option value="text">Textos</option>
-                    <option value="object">Objetos</option>
-                    <option value="background">Fondos</option>
-                </select>
-            </div>
-            <div style="margin-bottom: 20px;">
-                <label style="display: block; margin-bottom: 10px; font-weight: 600;">Preservar detalles</label>
-                <input type="checkbox" id="preserveDetails" checked> Mantener texturas originales
-            </div>
-            <button class="tool-btn btn-success" id="saveConfig" style="width: 100%;">Guardar configuración</button>
-        </div>
-    </div>
-
+    <!-- SCRIPT (TODO EL JAVASCRIPT) -->
     <script>
-        // Elementos del DOM
-        const uploadSection = document.getElementById('uploadSection');
-        const fileInput = document.getElementById('fileInput');
-        const uploadBtn = document.getElementById('uploadBtn');
-        const imageContainer = document.getElementById('imageContainer');
-        const toolbar = document.getElementById('toolbar');
-        const advancedTools = document.getElementById('advancedTools');
-        const historyPanel = document.getElementById('historyPanel');
-        const originalCanvas = document.getElementById('originalCanvas');
-        const resultCanvas = document.getElementById('resultCanvas');
-        const selectAreaBtn = document.getElementById('selectAreaBtn');
-        const resetSelectionBtn = document.getElementById('resetSelectionBtn');
-        const processBtn = document.getElementById('processBtn');
-        const downloadBtn = document.getElementById('downloadBtn');
-        const zoomInBtn = document.getElementById('zoomInBtn');
-        const zoomOutBtn = document.getElementById('zoomOutBtn');
-        const rotateBtn = document.getElementById('rotateBtn');
-        const enhanceBtn = document.getElementById('enhanceBtn');
-        const compareBtn = document.getElementById('compareBtn');
-        const clearBtn = document.getElementById('clearBtn');
-        const loadingOverlay = document.getElementById('loadingOverlay');
-        const imageDimensions = document.getElementById('imageDimensions');
-        const historyList = document.getElementById('historyList');
-        const clearHistoryBtn = document.getElementById('clearHistoryBtn');
-        const configModal = document.getElementById('configModal');
-        const closeModal = document.getElementById('closeModal');
-
-        // Variables de estado
+        // VARIABLES DE MONETIZACIÓN
+        let userPlan = localStorage.getItem('userPlan') || 'free';
+        let freeEdits = parseInt(localStorage.getItem('freeEdits')) || 0;
+        let freeTimer = 300; // 5 minutos en segundos
+        let timerInterval;
+        
+        // VARIABLES DE LA APP
         let originalImage = null;
         let currentImage = null;
-        let ctx = originalCanvas.getContext('2d');
-        let resultCtx = resultCanvas.getContext('2d');
+        const originalCanvas = document.getElementById('originalCanvas');
+        const resultCanvas = document.getElementById('resultCanvas');
+        const ctx = originalCanvas.getContext('2d');
+        const resultCtx = resultCanvas.getContext('2d');
         let isSelecting = false;
         let startX, startY, endX, endY;
         let selection = null;
@@ -767,95 +1029,94 @@
             mode: 'watermark',
             preserveDetails: true
         };
+        let comparing = false;
 
-        // Event Listeners
-        uploadBtn.addEventListener('click', () => fileInput.click());
-        
-        uploadSection.addEventListener('click', () => fileInput.click());
-        
-        uploadSection.addEventListener('dragover', (e) => {
-            e.preventDefault();
-            uploadSection.classList.add('dragover');
-        });
+        // ELEMENTOS DEL DOM
+        const uploadSection = document.getElementById('uploadSection');
+        const fileInput = document.getElementById('fileInput');
+        const uploadBtn = document.getElementById('uploadBtn');
+        const imageContainer = document.getElementById('imageContainer');
+        const toolbar = document.getElementById('toolbar');
+        const advancedTools = document.getElementById('advancedTools');
+        const historyPanel = document.getElementById('historyPanel');
+        const selectAreaBtn = document.getElementById('selectAreaBtn');
+        const resetSelectionBtn = document.getElementById('resetSelectionBtn');
+        const processBtn = document.getElementById('processBtn');
+        const downloadBtn = document.getElementById('downloadBtn');
+        const zoomInBtn = document.getElementById('zoomInBtn');
+        const zoomOutBtn = document.getElementById('zoomOutBtn');
+        const rotateBtn = document.getElementById('rotateBtn');
+        const enhanceBtn = document.getElementById('enhanceBtn');
+        const compareBtn = document.getElementById('compareBtn');
+        const clearBtn = document.getElementById('clearBtn');
+        const loadingOverlay = document.getElementById('loadingOverlay');
+        const imageDimensions = document.getElementById('imageDimensions');
+        const historyList = document.getElementById('historyList');
+        const clearHistoryBtn = document.getElementById('clearHistoryBtn');
+        const intensitySlider = document.getElementById('intensitySlider');
+        const brushSizeSlider = document.getElementById('brushSizeSlider');
+        const smoothSlider = document.getElementById('smoothSlider');
+        const upgradeBtn = document.getElementById('upgradeBtn');
+        const adBanner = document.getElementById('adBanner');
+        const freeTimer = document.getElementById('freeTimer');
+        const paymentModal = document.getElementById('paymentModal');
 
-        uploadSection.addEventListener('dragleave', () => {
-            uploadSection.classList.remove('dragover');
-        });
-
-        uploadSection.addEventListener('drop', (e) => {
-            e.preventDefault();
-            uploadSection.classList.remove('dragover');
-            const file = e.dataTransfer.files[0];
-            if (file && file.type.startsWith('image/')) {
-                loadImage(file);
-            }
-        });
-
-        fileInput.addEventListener('change', (e) => {
-            const file = e.dataTransfer ? e.dataTransfer.files[0] : e.target.files[0];
-            if (file) {
-                loadImage(file);
-            }
-        });
-
-        // Cargar imagen
-        function loadImage(file) {
-            showLoading('Cargando imagen...');
-            
-            const reader = new FileReader();
-            reader.onload = (e) => {
-                const img = new Image();
-                img.onload = () => {
-                    originalImage = img;
-                    currentImage = img;
-                    
-                    // Ajustar canvas
-                    const maxWidth = 600;
-                    const maxHeight = 400;
-                    let width = img.width;
-                    let height = img.height;
-                    
-                    if (width > maxWidth) {
-                        height = (maxWidth / width) * height;
-                        width = maxWidth;
-                    }
-                    
-                    if (height > maxHeight) {
-                        width = (maxHeight / height) * width;
-                        height = maxHeight;
-                    }
-                    
-                    originalCanvas.width = width;
-                    originalCanvas.height = height;
-                    resultCanvas.width = width;
-                    resultCanvas.height = height;
-                    
-                    ctx.drawImage(img, 0, 0, width, height);
-                    resultCtx.drawImage(img, 0, 0, width, height);
-                    
-                    imageDimensions.textContent = `${img.width}×${img.height}`;
-                    imageContainer.style.display = 'grid';
-                    toolbar.style.display = 'flex';
-                    advancedTools.style.display = 'block';
-                    historyPanel.style.display = 'block';
-                    uploadSection.style.display = 'none';
-                    
-                    selection = null;
-                    processBtn.disabled = true;
-                    downloadBtn.style.display = 'none';
-                    resetSelectionBtn.disabled = true;
-                    
-                    // Añadir al historial
-                    addToHistory(resultCanvas.toDataURL());
-                    
-                    hideLoading();
-                };
-                img.src = e.target.result;
-            };
-            reader.readAsDataURL(file);
+        // INICIALIZAR SEGÚN PLAN
+        if(userPlan !== 'free') {
+            adBanner.style.display = 'none';
+            document.querySelector('.sidebar-ads').style.display = 'none';
+            freeTimer.style.display = 'none';
+        } else {
+            startFreeTimer();
+            updateFreeCounter();
         }
 
-        // Funciones de utilidad
+        // FUNCIONES DE MONETIZACIÓN
+        function startFreeTimer() {
+            timerInterval = setInterval(() => {
+                freeTimer--;
+                let mins = Math.floor(freeTimer/60);
+                let secs = freeTimer%60;
+                document.getElementById('timer').textContent = 
+                    `${mins.toString().padStart(2,'0')}:${secs.toString().padStart(2,'0')}`;
+                
+                if(freeTimer <= 0) {
+                    clearInterval(timerInterval);
+                    alert('¡Tiempo gratis agotado! Actualiza a Pro para continuar');
+                    document.getElementById('pricing').scrollIntoView({behavior: 'smooth'});
+                }
+            }, 1000);
+        }
+        
+        function selectPlan(plan) {
+            if(plan === 'free') return;
+            paymentModal.style.display = 'flex';
+        }
+        
+        function processPayment() {
+            alert('Pago procesado (simulación). ¡Gracias por tu compra!');
+            userPlan = 'pro';
+            localStorage.setItem('userPlan', 'pro');
+            paymentModal.style.display = 'none';
+            location.reload();
+        }
+        
+        function updateFreeCounter() {
+            let counter = document.querySelector('.free-counter');
+            if(!counter) {
+                counter = document.createElement('div');
+                counter.className = 'free-counter';
+                document.querySelector('.pricing-card:first-child').appendChild(counter);
+            }
+            counter.innerHTML = `
+                <strong>Ediciones hoy: ${freeEdits}/3</strong>
+                <div class="counter-bar">
+                    <div class="counter-fill" style="width: ${(freeEdits/3)*100}%"></div>
+                </div>
+            `;
+        }
+
+        // FUNCIONES DE LA APP
         function showLoading(message = 'Procesando...') {
             document.getElementById('loadingMessage').textContent = message;
             loadingOverlay.style.display = 'flex';
@@ -891,7 +1152,94 @@
             img.src = imageData;
         }
 
-        // Herramienta de selección mejorada
+        // EVENT LISTENERS
+        uploadBtn.addEventListener('click', () => fileInput.click());
+        uploadSection.addEventListener('click', () => fileInput.click());
+        
+        uploadSection.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadSection.classList.add('dragover');
+        });
+
+        uploadSection.addEventListener('dragleave', () => {
+            uploadSection.classList.remove('dragover');
+        });
+
+        uploadSection.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadSection.classList.remove('dragover');
+            const file = e.dataTransfer.files[0];
+            if (file && file.type.startsWith('image/')) {
+                loadImage(file);
+            }
+        });
+
+        fileInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                loadImage(file);
+            }
+        });
+
+        function loadImage(file) {
+            // VERIFICAR LÍMITES GRATIS
+            if(userPlan === 'free' && freeEdits >= 3) {
+                alert('Has alcanzado el límite de ediciones gratuitas por hoy. ¡Actualiza a Pro!');
+                return;
+            }
+
+            showLoading('Cargando imagen...');
+            
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const img = new Image();
+                img.onload = () => {
+                    originalImage = img;
+                    currentImage = img;
+                    
+                    const maxWidth = 600;
+                    const maxHeight = 400;
+                    let width = img.width;
+                    let height = img.height;
+                    
+                    if (width > maxWidth) {
+                        height = (maxWidth / width) * height;
+                        width = maxWidth;
+                    }
+                    
+                    if (height > maxHeight) {
+                        width = (maxHeight / height) * width;
+                        height = maxHeight;
+                    }
+                    
+                    originalCanvas.width = width;
+                    originalCanvas.height = height;
+                    resultCanvas.width = width;
+                    resultCanvas.height = height;
+                    
+                    ctx.drawImage(img, 0, 0, width, height);
+                    resultCtx.drawImage(img, 0, 0, width, height);
+                    
+                    imageDimensions.textContent = `${img.width}×${img.height}`;
+                    imageContainer.style.display = 'grid';
+                    toolbar.style.display = 'flex';
+                    advancedTools.style.display = 'block';
+                    historyPanel.style.display = 'block';
+                    uploadSection.style.display = 'none';
+                    
+                    selection = null;
+                    processBtn.disabled = true;
+                    downloadBtn.style.display = 'none';
+                    resetSelectionBtn.disabled = true;
+                    
+                    addToHistory(resultCanvas.toDataURL());
+                    hideLoading();
+                };
+                img.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+
         selectAreaBtn.addEventListener('click', () => {
             if (!originalImage) return;
             
@@ -959,13 +1307,6 @@
                     ctx.lineWidth = 2;
                     ctx.setLineDash([]);
                     ctx.strokeRect(selection.x, selection.y, selection.width, selection.height);
-                    
-                    // Añadir manejadores
-                    ctx.fillStyle = '#00ff00';
-                    ctx.fillRect(selection.x - 3, selection.y - 3, 6, 6);
-                    ctx.fillRect(selection.x + selection.width - 3, selection.y - 3, 6, 6);
-                    ctx.fillRect(selection.x - 3, selection.y + selection.height - 3, 6, 6);
-                    ctx.fillRect(selection.x + selection.width - 3, selection.y + selection.height - 3, 6, 6);
                 } else {
                     ctx.strokeStyle = '#ff0000';
                     ctx.lineWidth = 2;
@@ -981,7 +1322,6 @@
             originalCanvas.addEventListener('mouseup', handleMouseUp);
         });
 
-        // Resetear selección
         resetSelectionBtn.addEventListener('click', () => {
             selection = null;
             processBtn.disabled = true;
@@ -990,9 +1330,15 @@
             ctx.drawImage(originalImage, 0, 0, originalCanvas.width, originalCanvas.height);
         });
 
-        // Procesamiento mejorado con diferentes algoritmos
         processBtn.addEventListener('click', () => {
             if (!originalImage || !selection) return;
+            
+            // CONTAR EDICIÓN PARA USUARIOS FREE
+            if(userPlan === 'free') {
+                freeEdits++;
+                localStorage.setItem('freeEdits', freeEdits);
+                updateFreeCounter();
+            }
             
             showLoading('Aplicando algoritmos avanzados...');
             processBtn.disabled = true;
@@ -1014,19 +1360,32 @@
                     height: Math.floor(selection.height)
                 };
                 
-                switch(currentTool) {
-                    case 'smart':
-                        applySmartFill(data, tempCanvas.width, area);
-                        break;
-                    case 'clone':
-                        applyCloneStamp(data, tempCanvas.width, area);
-                        break;
-                    case 'heal':
-                        applyHealingBrush(data, tempCanvas.width, area);
-                        break;
-                    case 'content':
-                        applyContentAware(data, tempCanvas.width, area);
-                        break;
+                // APLICAR RELLENO SIMPLE POR AHORA
+                for (let y = area.y; y < area.y + area.height; y++) {
+                    for (let x = area.x; x < area.x + area.width; x++) {
+                        const i = (y * tempCanvas.width + x) * 4;
+                        
+                        let r = 0, g = 0, b = 0, count = 0;
+                        
+                        for (let ny = Math.max(0, y - 2); ny <= Math.min(tempCanvas.height - 1, y + 2); ny++) {
+                            for (let nx = Math.max(0, x - 2); nx <= Math.min(tempCanvas.width - 1, x + 2); nx++) {
+                                if (nx < area.x || nx >= area.x + area.width || 
+                                    ny < area.y || ny >= area.y + area.height) {
+                                    const ni = (ny * tempCanvas.width + nx) * 4;
+                                    r += data[ni];
+                                    g += data[ni + 1];
+                                    b += data[ni + 2];
+                                    count++;
+                                }
+                            }
+                        }
+                        
+                        if (count > 0) {
+                            data[i] = r / count;
+                            data[i + 1] = g / count;
+                            data[i + 2] = b / count;
+                        }
+                    }
                 }
                 
                 tempCtx.putImageData(imageData, 0, 0);
@@ -1034,219 +1393,31 @@
                 resultCtx.clearRect(0, 0, resultCanvas.width, resultCanvas.height);
                 resultCtx.drawImage(tempCanvas, 0, 0);
                 
+                // AÑADIR WATERMARK SI ES FREE
+                if(userPlan === 'free') {
+                    resultCtx.font = '20px Arial';
+                    resultCtx.fillStyle = 'rgba(255,255,255,0.5)';
+                    resultCtx.fillText('✧ VERSIÓN GRATUITA ✧', 10, resultCanvas.height - 20);
+                }
+                
                 downloadBtn.style.display = 'inline-block';
                 addToHistory(resultCanvas.toDataURL());
                 
                 hideLoading();
-                
-                // Mejorar resultado automáticamente
-                if (config.mode === 'watermark') {
-                    enhanceResult();
-                }
             }, 1500);
         });
 
-        // Algoritmos de procesamiento
-        function applySmartFill(data, width, area) {
-            for (let y = area.y; y < area.y + area.height; y++) {
-                for (let x = area.x; x < area.x + area.width; x++) {
-                    const i = (y * width + x) * 4;
-                    
-                    let r = 0, g = 0, b = 0, count = 0;
-                    const sampleSize = Math.max(3, Math.floor(brushSize / 10));
-                    
-                    for (let ny = Math.max(0, y - sampleSize); ny <= Math.min(originalCanvas.height - 1, y + sampleSize); ny++) {
-                        for (let nx = Math.max(0, x - sampleSize); nx <= Math.min(originalCanvas.width - 1, x + sampleSize); nx++) {
-                            if (nx < area.x || nx >= area.x + area.width || ny < area.y || ny >= area.y + area.height) {
-                                const ni = (ny * width + nx) * 4;
-                                const weight = 1 / (Math.abs(nx - x) + Math.abs(ny - y) + 1);
-                                r += data[ni] * weight;
-                                g += data[ni + 1] * weight;
-                                b += data[ni + 2] * weight;
-                                count += weight;
-                            }
-                        }
-                    }
-                    
-                    if (count > 0) {
-                        data[i] = r / count;
-                        data[i + 1] = g / count;
-                        data[i + 2] = b / count;
-                    }
-                }
-            }
-        }
-
-        function applyCloneStamp(data, width, area) {
-            const sourceX = Math.max(0, area.x - brushSize);
-            const sourceY = Math.max(0, area.y - brushSize);
-            
-            for (let y = area.y; y < area.y + area.height; y++) {
-                for (let x = area.x; x < area.x + area.width; x++) {
-                    const i = (y * width + x) * 4;
-                    const sourceI = ((sourceY + (y - area.y)) * width + (sourceX + (x - area.x))) * 4;
-                    
-                    data[i] = data[sourceI];
-                    data[i + 1] = data[sourceI + 1];
-                    data[i + 2] = data[sourceI + 2];
-                }
-            }
-        }
-
-        function applyHealingBrush(data, width, area) {
-            for (let y = area.y; y < area.y + area.height; y++) {
-                for (let x = area.x; x < area.x + area.width; x++) {
-                    const i = (y * width + x) * 4;
-                    
-                    let r = 0, g = 0, b = 0, count = 0;
-                    const textureSize = Math.floor(brushSize / 5);
-                    
-                    for (let ny = Math.max(0, y - textureSize); ny <= Math.min(originalCanvas.height - 1, y + textureSize); ny++) {
-                        for (let nx = Math.max(0, x - textureSize); nx <= Math.min(originalCanvas.width - 1, x + textureSize); nx++) {
-                            if (nx < area.x || nx >= area.x + area.width || ny < area.y || ny >= area.y + area.height) {
-                                const ni = (ny * width + nx) * 4;
-                                const dist = Math.sqrt(Math.pow(nx - x, 2) + Math.pow(ny - y, 2));
-                                const weight = Math.exp(-dist / smoothness);
-                                r += data[ni] * weight;
-                                g += data[ni + 1] * weight;
-                                b += data[ni + 2] * weight;
-                                count += weight;
-                            }
-                        }
-                    }
-                    
-                    if (count > 0) {
-                        data[i] = r / count;
-                        data[i + 1] = g / count;
-                        data[i + 2] = b / count;
-                    }
-                }
-            }
-        }
-
-        function applyContentAware(data, width, area) {
-            // Versión simplificada de content-aware fill
-            const patchSize = Math.min(area.width, area.height);
-            
-            for (let y = area.y; y < area.y + area.height; y++) {
-                for (let x = area.x; x < area.x + area.width; x++) {
-                    const i = (y * width + x) * 4;
-                    
-                    let bestMatch = { r: 0, g: 0, b: 0, score: Infinity };
-                    
-                    // Buscar el mejor parche similar fuera del área
-                    for (let sy = 0; sy < originalCanvas.height - patchSize; sy += 5) {
-                        for (let sx = 0; sx < originalCanvas.width - patchSize; sx += 5) {
-                            if (sx < area.x || sx > area.x + area.width || sy < area.y || sy > area.y + area.height) {
-                                let score = 0;
-                                let sampleCount = 0;
-                                
-                                for (let py = 0; py < patchSize; py++) {
-                                    for (let px = 0; px < patchSize; px++) {
-                                        const sampleI = ((sy + py) * width + (sx + px)) * 4;
-                                        const targetI = ((area.y + py) * width + (area.x + px)) * 4;
-                                        
-                                        score += Math.abs(data[sampleI] - data[targetI]) +
-                                                Math.abs(data[sampleI + 1] - data[targetI + 1]) +
-                                                Math.abs(data[sampleI + 2] - data[targetI + 2]);
-                                        sampleCount++;
-                                    }
-                                }
-                                
-                                score /= sampleCount;
-                                
-                                if (score < bestMatch.score) {
-                                    bestMatch.score = score;
-                                    const bestI = ((sy + (y - area.y)) * width + (sx + (x - area.x))) * 4;
-                                    bestMatch.r = data[bestI];
-                                    bestMatch.g = data[bestI + 1];
-                                    bestMatch.b = data[bestI + 2];
-                                }
-                            }
-                        }
-                    }
-                    
-                    if (bestMatch.score < Infinity) {
-                        data[i] = bestMatch.r;
-                        data[i + 1] = bestMatch.g;
-                        data[i + 2] = bestMatch.b;
-                    }
-                }
-            }
-        }
-
-        // Mejorar resultado
-        function enhanceResult() {
-            showLoading('Mejorando resultado...');
-            
-            setTimeout(() => {
-                const imageData = resultCtx.getImageData(0, 0, resultCanvas.width, resultCanvas.height);
-                const data = imageData.data;
-                
-                // Aplicar suavizado
-                for (let i = 0; i < data.length; i += 4) {
-                    if (i % (resultCanvas.width * 4) < selection?.x || 
-                        i % (resultCanvas.width * 4) > selection?.x + selection?.width ||
-                        Math.floor(i / (resultCanvas.width * 4)) < selection?.y ||
-                        Math.floor(i / (resultCanvas.width * 4)) > selection?.y + selection?.height) {
-                        continue;
-                    }
-                    
-                    // Mejorar contraste local
-                    data[i] = Math.min(255, Math.max(0, data[i] * 1.1));
-                    data[i + 1] = Math.min(255, Math.max(0, data[i + 1] * 1.1));
-                    data[i + 2] = Math.min(255, Math.max(0, data[i + 2] * 1.1));
-                }
-                
-                resultCtx.putImageData(imageData, 0, 0);
-                addToHistory(resultCanvas.toDataURL());
-                hideLoading();
-            }, 800);
-        }
-
-        // Comparar original vs resultado
-        let comparing = false;
-        compareBtn.addEventListener('click', () => {
-            if (!comparing) {
-                resultCtx.clearRect(0, 0, resultCanvas.width, resultCanvas.height);
-                resultCtx.drawImage(originalImage, 0, 0, resultCanvas.width, resultCanvas.height);
-                compareBtn.style.background = 'linear-gradient(135deg, #f56565 0%, #c53030 100%)';
-                comparing = true;
-            } else {
-                resultCtx.clearRect(0, 0, resultCanvas.width, resultCanvas.height);
-                const lastHistory = history[0];
-                if (lastHistory) {
-                    const img = new Image();
-                    img.onload = () => {
-                        resultCtx.drawImage(img, 0, 0, resultCanvas.width, resultCanvas.height);
-                    };
-                    img.src = lastHistory;
-                }
-                compareBtn.style.background = 'linear-gradient(135deg, #4299e1 0%, #2b6cb0 100%)';
-                comparing = false;
-            }
-        });
-
-        // Zoom In
+        // TOOLBAR FUNCTIONS
         zoomInBtn.addEventListener('click', () => {
             zoom = Math.min(3, zoom + 0.2);
-            applyZoom();
+            originalCanvas.style.transform = `scale(${zoom})`;
         });
 
-        // Zoom Out
         zoomOutBtn.addEventListener('click', () => {
             zoom = Math.max(0.5, zoom - 0.2);
-            applyZoom();
+            originalCanvas.style.transform = `scale(${zoom})`;
         });
 
-        function applyZoom() {
-            const wrapper = document.getElementById('originalWrapper');
-            const canvas = originalCanvas;
-            canvas.style.transform = `scale(${zoom})`;
-            canvas.style.transformOrigin = 'top left';
-        }
-
-        // Rotar
         rotateBtn.addEventListener('click', () => {
             rotation = (rotation + 90) % 360;
             
@@ -1274,14 +1445,64 @@
             resultCtx.drawImage(tempCanvas, 0, 0);
         });
 
-        // Limpiar todo
+        enhanceBtn.addEventListener('click', () => {
+            showLoading('Mejorando resultado...');
+            setTimeout(() => {
+                const imageData = resultCtx.getImageData(0, 0, resultCanvas.width, resultCanvas.height);
+                const data = imageData.data;
+                
+                for (let i = 0; i < data.length; i += 4) {
+                    data[i] = Math.min(255, Math.max(0, data[i] * 1.1));
+                    data[i + 1] = Math.min(255, Math.max(0, data[i + 1] * 1.1));
+                    data[i + 2] = Math.min(255, Math.max(0, data[i + 2] * 1.1));
+                }
+                
+                resultCtx.putImageData(imageData, 0, 0);
+                addToHistory(resultCanvas.toDataURL());
+                hideLoading();
+            }, 500);
+        });
+
+        compareBtn.addEventListener('click', () => {
+            if (!comparing) {
+                resultCtx.clearRect(0, 0, resultCanvas.width, resultCanvas.height);
+                resultCtx.drawImage(originalImage, 0, 0, resultCanvas.width, resultCanvas.height);
+                compareBtn.style.background = 'linear-gradient(135deg, #f56565 0%, #c53030 100%)';
+                comparing = true;
+            } else {
+                resultCtx.clearRect(0, 0, resultCanvas.width, resultCanvas.height);
+                const lastHistory = history[0];
+                if (lastHistory) {
+                    const img = new Image();
+                    img.onload = () => {
+                        resultCtx.drawImage(img, 0, 0, resultCanvas.width, resultCanvas.height);
+                    };
+                    img.src = lastHistory;
+                }
+                compareBtn.style.background = 'linear-gradient(135deg, #4299e1 0%, #2b6cb0 100%)';
+                comparing = false;
+            }
+        });
+
         clearBtn.addEventListener('click', () => {
             if (confirm('¿Estás seguro de limpiar todo? Se perderá el progreso actual.')) {
                 location.reload();
             }
         });
 
-        // Configuración de herramientas
+        downloadBtn.addEventListener('click', () => {
+            const link = document.createElement('a');
+            link.download = `imagen-editada-${Date.now()}.png`;
+            link.href = resultCanvas.toDataURL('image/png');
+            link.click();
+        });
+
+        clearHistoryBtn.addEventListener('click', () => {
+            history = [resultCanvas.toDataURL()];
+            updateHistoryDisplay();
+        });
+
+        // TOOL SELECTION
         document.querySelectorAll('.tool-item').forEach(item => {
             item.addEventListener('click', function() {
                 document.querySelectorAll('.tool-item').forEach(t => t.classList.remove('active'));
@@ -1290,59 +1511,31 @@
             });
         });
 
-        // Sliders
-        document.getElementById('intensitySlider').addEventListener('input', (e) => {
+        // SLIDERS
+        intensitySlider.addEventListener('input', (e) => {
             intensity = e.target.value;
             document.getElementById('intensityValue').textContent = intensity + '%';
         });
 
-        document.getElementById('brushSizeSlider').addEventListener('input', (e) => {
+        brushSizeSlider.addEventListener('input', (e) => {
             brushSize = e.target.value;
             document.getElementById('brushSizeValue').textContent = brushSize + 'px';
         });
 
-        document.getElementById('smoothSlider').addEventListener('input', (e) => {
+        smoothSlider.addEventListener('input', (e) => {
             smoothness = e.target.value;
             document.getElementById('smoothValue').textContent = smoothness + '%';
         });
 
-        // Abrir configuración
-        document.addEventListener('keydown', (e) => {
-            if (e.ctrlKey && e.key === ',') {
-                e.preventDefault();
-                configModal.style.display = 'flex';
-            }
+        upgradeBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            document.getElementById('pricing').scrollIntoView({ behavior: 'smooth' });
         });
 
-        closeModal.addEventListener('click', () => {
-            configModal.style.display = 'none';
-        });
-
-        document.getElementById('saveConfig').addEventListener('click', () => {
-            config.quality = document.getElementById('qualitySelect').value;
-            config.mode = document.getElementById('modeSelect').value;
-            config.preserveDetails = document.getElementById('preserveDetails').checked;
-            configModal.style.display = 'none';
-        });
-
-        // Limpiar historial
-        clearHistoryBtn.addEventListener('click', () => {
-            history = [resultCanvas.toDataURL()];
-            updateHistoryDisplay();
-        });
-
-        // Descargar imagen
-        downloadBtn.addEventListener('click', () => {
-            const link = document.createElement('a');
-            link.download = `imagen-editada-${Date.now()}.png`;
-            link.href = resultCanvas.toDataURL('image/png');
-            link.click();
-        });
-
-        // Cerrar modal al hacer clic fuera
+        // CERRAR MODAL
         window.addEventListener('click', (e) => {
-            if (e.target === configModal) {
-                configModal.style.display = 'none';
+            if (e.target === paymentModal) {
+                paymentModal.style.display = 'none';
             }
         });
     </script>
