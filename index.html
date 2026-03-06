@@ -1390,85 +1390,87 @@
             originalCanvas.classList.remove('selecting');
         });
 
-        processBtn.addEventListener('click', () => {
-            if (!originalImage || !selection) return;
-            
-            // CONTAR EDICIÓN PARA USUARIOS FREE
-            if(userPlan === 'free') {
-                freeEdits++;
-                localStorage.setItem('freeEdits', freeEdits);
-                updateFreeCounter();
-            }
-            
-            showLoading('Aplicando algoritmos avanzados...');
-            processBtn.disabled = true;
-            
-            // Simular procesamiento (en una app real, aquí iría el algoritmo real)
-            setTimeout(() => {
-                const tempCanvas = document.createElement('canvas');
-                tempCanvas.width = originalCanvas.width;
-                tempCanvas.height = originalCanvas.height;
-                const tempCtx = tempCanvas.getContext('2d');
-                tempCtx.drawImage(originalImage, 0, 0, originalCanvas.width, originalCanvas.height);
+       processBtn.addEventListener('click', () => {
+    if (!originalImage || !selection) return;
+    
+    if(userPlan === 'free') {
+        freeEdits++;
+        localStorage.setItem('freeEdits', freeEdits);
+        updateFreeCounter();
+    }
+    
+    showLoading('Eliminando objeto...');
+    processBtn.disabled = true;
+    
+    setTimeout(() => {
+        const tempCanvas = document.createElement('canvas');
+        tempCanvas.width = originalCanvas.width;
+        tempCanvas.height = originalCanvas.height;
+        const tempCtx = tempCanvas.getContext('2d');
+        tempCtx.drawImage(originalImage, 0, 0, originalCanvas.width, originalCanvas.height);
+        
+        const imageData = tempCtx.getImageData(0, 0, tempCanvas.width, tempCanvas.height);
+        const data = imageData.data;
+        
+        const area = {
+            x: Math.floor(selection.x),
+            y: Math.floor(selection.y),
+            width: Math.floor(selection.width),
+            height: Math.floor(selection.height)
+        };
+        
+        // Versión mejorada - busca en un área más amplia
+        for (let y = area.y; y < area.y + area.height; y++) {
+            for (let x = area.x; x < area.x + area.width; x++) {
+                const i = (y * tempCanvas.width + x) * 4;
                 
-                const imageData = tempCtx.getImageData(0, 0, tempCanvas.width, tempCanvas.height);
-                const data = imageData.data;
+                let r = 0, g = 0, b = 0, totalWeight = 0;
                 
-                const area = {
-                    x: Math.floor(selection.x),
-                    y: Math.floor(selection.y),
-                    width: Math.floor(selection.width),
-                    height: Math.floor(selection.height)
-                };
-                
-                // APLICAR RELLENO SIMPLE (simulación de eliminación)
-                for (let y = area.y; y < area.y + area.height; y++) {
-                    for (let x = area.x; x < area.x + area.width; x++) {
-                        const i = (y * tempCanvas.width + x) * 4;
+                // Buscar en un rango vertical más amplio (40 píxeles arriba/abajo)
+                for (let ny = Math.max(0, y - 40); ny <= Math.min(tempCanvas.height - 1, y + 40); ny++) {
+                    // Solo usar píxeles fuera del área seleccionada
+                    if (ny < area.y || ny >= area.y + area.height) {
+                        const nx = x; // Misma columna para mantener verticalidad
                         
-                        let r = 0, g = 0, b = 0, count = 0;
+                        const ni = (ny * tempCanvas.width + nx) * 4;
                         
-                        // Tomar píxeles del borde para rellenar
-                        for (let ny = Math.max(0, y - 3); ny <= Math.min(tempCanvas.height - 1, y + 3); ny++) {
-                            for (let nx = Math.max(0, x - 3); nx <= Math.min(tempCanvas.width - 1, x + 3); nx++) {
-                                if (nx < area.x || nx >= area.x + area.width || 
-                                    ny < area.y || ny >= area.y + area.height) {
-                                    const ni = (ny * tempCanvas.width + nx) * 4;
-                                    r += data[ni];
-                                    g += data[ni + 1];
-                                    b += data[ni + 2];
-                                    count++;
-                                }
-                            }
-                        }
+                        // Distancia vertical
+                        const dist = Math.abs(ny - y);
+                        // Peso ajustado para dar más importancia a píxeles lejanos
+                        const weight = 1 / (dist * 0.3 + 1);
                         
-                        if (count > 0) {
-                            data[i] = r / count;
-                            data[i + 1] = g / count;
-                            data[i + 2] = b / count;
-                        }
+                        r += data[ni] * weight;
+                        g += data[ni + 1] * weight;
+                        b += data[ni + 2] * weight;
+                        totalWeight += weight;
                     }
                 }
                 
-                tempCtx.putImageData(imageData, 0, 0);
-                
-                resultCtx.clearRect(0, 0, resultCanvas.width, resultCanvas.height);
-                resultCtx.drawImage(tempCanvas, 0, 0);
-                
-                // AÑADIR WATERMARK SI ES FREE
-                if(userPlan === 'free') {
-                    resultCtx.font = '20px Arial';
-                    resultCtx.fillStyle = 'rgba(255,255,255,0.5)';
-                    resultCtx.fillText('✧ VERSIÓN GRATUITA ✧', 10, resultCanvas.height - 20);
+                if (totalWeight > 0) {
+                    data[i] = r / totalWeight;
+                    data[i + 1] = g / totalWeight;
+                    data[i + 2] = b / totalWeight;
                 }
-                
-                downloadBtn.style.display = 'inline-block';
-                addToHistory(resultCanvas.toDataURL());
-                
-                hideLoading();
-            }, 1500);
-        });
-
+            }
+        }
+        
+        tempCtx.putImageData(imageData, 0, 0);
+        
+        resultCtx.clearRect(0, 0, resultCanvas.width, resultCanvas.height);
+        resultCtx.drawImage(tempCanvas, 0, 0);
+        
+        if(userPlan === 'free') {
+            resultCtx.font = '20px Arial';
+            resultCtx.fillStyle = 'rgba(255,255,255,0.5)';
+            resultCtx.fillText('✧ VERSIÓN GRATUITA ✧', 10, resultCanvas.height - 20);
+        }
+        
+        downloadBtn.style.display = 'inline-block';
+        addToHistory(resultCanvas.toDataURL());
+        
+        hideLoading();
+    }, 2000);
+});
         // TOOLBAR FUNCTIONS
         zoomInBtn.addEventListener('click', () => {
             zoom = Math.min(3, zoom + 0.2);
