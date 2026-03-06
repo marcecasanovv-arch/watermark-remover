@@ -1390,7 +1390,7 @@
             originalCanvas.classList.remove('selecting');
         });
 
-       processBtn.addEventListener('click', () => {
+      processBtn.addEventListener('click', () => {
     if (!originalImage || !selection) return;
     
     if(userPlan === 'free') {
@@ -1419,30 +1419,68 @@
             height: Math.floor(selection.height)
         };
         
-        // Versión mejorada - busca en un área más amplia
+        // Crear máscara de bordes para proteger las manos
+        const edgeMask = new Uint8Array(area.width * area.height);
+        
+        // Detectar bordes dentro del área (donde están las manos)
         for (let y = area.y; y < area.y + area.height; y++) {
             for (let x = area.x; x < area.x + area.width; x++) {
+                const i = (y * tempCanvas.width + x) * 4;
+                const maskIdx = (y - area.y) * area.width + (x - area.x);
+                
+                // Calcular diferencia con vecinos para detectar bordes
+                if (x > area.x && x < area.x + area.width - 1 && 
+                    y > area.y && y < area.y + area.height - 1) {
+                    
+                    const left = i - 4;
+                    const right = i + 4;
+                    const top = i - tempCanvas.width * 4;
+                    const bottom = i + tempCanvas.width * 4;
+                    
+                    const diffHorizontal = Math.abs(data[left] - data[right]) + 
+                                          Math.abs(data[left+1] - data[right+1]) + 
+                                          Math.abs(data[left+2] - data[right+2]);
+                    
+                    const diffVertical = Math.abs(data[top] - data[bottom]) + 
+                                        Math.abs(data[top+1] - data[bottom+1]) + 
+                                        Math.abs(data[top+2] - data[bottom+2]);
+                    
+                    // Si hay mucho cambio, es un borde (mano)
+                    if (diffHorizontal > 100 || diffVertical > 100) {
+                        edgeMask[maskIdx] = 1; // Marcar como borde a proteger
+                    }
+                }
+            }
+        }
+        
+        // Aplicar relleno respetando bordes
+        for (let y = area.y; y < area.y + area.height; y++) {
+            for (let x = area.x; x < area.x + area.width; x++) {
+                const maskIdx = (y - area.y) * area.width + (x - area.x);
+                
+                // Si es un borde (mano), mantener original
+                if (edgeMask[maskIdx] === 1) continue;
+                
                 const i = (y * tempCanvas.width + x) * 4;
                 
                 let r = 0, g = 0, b = 0, totalWeight = 0;
                 
-                // Buscar en un rango vertical más amplio (40 píxeles arriba/abajo)
-                for (let ny = Math.max(0, y - 40); ny <= Math.min(tempCanvas.height - 1, y + 40); ny++) {
-                    // Solo usar píxeles fuera del área seleccionada
-                    if (ny < area.y || ny >= area.y + area.height) {
-                        const nx = x; // Misma columna para mantener verticalidad
-                        
-                        const ni = (ny * tempCanvas.width + nx) * 4;
-                        
-                        // Distancia vertical
-                        const dist = Math.abs(ny - y);
-                        // Peso ajustado para dar más importancia a píxeles lejanos
-                        const weight = 1 / (dist * 0.3 + 1);
-                        
-                        r += data[ni] * weight;
-                        g += data[ni + 1] * weight;
-                        b += data[ni + 2] * weight;
-                        totalWeight += weight;
+                // Buscar píxeles de referencia (solo de fuera del área)
+                for (let ny = Math.max(0, y - 20); ny <= Math.min(tempCanvas.height - 1, y + 20); ny++) {
+                    for (let nx = Math.max(0, x - 20); nx <= Math.min(tempCanvas.width - 1, x + 20); nx++) {
+                        if (nx < area.x || nx >= area.x + area.width || 
+                            ny < area.y || ny >= area.y + area.height) {
+                            
+                            const ni = (ny * tempCanvas.width + nx) * 4;
+                            
+                            const dist = Math.sqrt((nx - x)**2 + (ny - y)**2);
+                            const weight = 1 / (dist + 1);
+                            
+                            r += data[ni] * weight;
+                            g += data[ni + 1] * weight;
+                            b += data[ni + 2] * weight;
+                            totalWeight += weight;
+                        }
                     }
                 }
                 
