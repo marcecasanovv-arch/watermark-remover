@@ -1399,7 +1399,7 @@ processBtn.addEventListener('click', () => {
         updateFreeCounter();
     }
     
-    showLoading('Eliminando objeto...');
+    showLoading('Eliminando inteligentemente...');
     processBtn.disabled = true;
     
     setTimeout(() => {
@@ -1419,7 +1419,7 @@ processBtn.addEventListener('click', () => {
             height: Math.floor(selection.height)
         };
         
-        // DETECTAR COLOR DE FONDO
+        // 1. DETECTAR COLOR DE FONDO (bordes del área)
         let bgR = 0, bgG = 0, bgB = 0, bgCount = 0;
         
         for (let y = area.y; y <= area.y + area.height; y++) {
@@ -1441,13 +1441,91 @@ processBtn.addEventListener('click', () => {
             bgB = Math.floor(bgB / bgCount);
         }
         
-        // FUERZA el color de fondo en TODA el área seleccionada
+        // 2. CREAR MÁSCARA DE BORDES (lo que NO se debe borrar)
+        const edgeMask = new Uint8Array(area.width * area.height);
+        
         for (let y = area.y; y < area.y + area.height; y++) {
             for (let x = area.x; x < area.x + area.width; x++) {
                 const i = (y * tempCanvas.width + x) * 4;
-                data[i] = bgR;
-                data[i + 1] = bgG;
-                data[i + 2] = bgB;
+                const maskIdx = (y - area.y) * area.width + (x - area.x);
+                
+                if (x > area.x && x < area.x + area.width - 1 && 
+                    y > area.y && y < area.y + area.height - 1) {
+                    
+                    const left = i - 4;
+                    const right = i + 4;
+                    const top = i - tempCanvas.width * 4;
+                    const bottom = i + tempCanvas.width * 4;
+                    
+                    const diffHorizontal = Math.abs(data[left] - data[right]) + 
+                                          Math.abs(data[left+1] - data[right+1]) + 
+                                          Math.abs(data[left+2] - data[right+2]);
+                    
+                    const diffVertical = Math.abs(data[top] - data[bottom]) + 
+                                        Math.abs(data[top+1] - data[bottom+1]) + 
+                                        Math.abs(data[top+2] - data[bottom+2]);
+                    
+                    // Si hay mucho cambio, es un borde (mano, objeto importante)
+                    if (diffHorizontal > 60 || diffVertical > 60) {
+                        edgeMask[maskIdx] = 1; // 1 = proteger
+                    }
+                }
+            }
+        }
+        
+        // 3. APLICAR RELLENO INTELIGENTE
+        for (let y = area.y; y < area.y + area.height; y++) {
+            for (let x = area.x; x < area.x + area.width; x++) {
+                const maskIdx = (y - area.y) * area.width + (x - area.x);
+                const i = (y * tempCanvas.width + x) * 4;
+                
+                // Si es un BORDE (mano) - mantener original
+                if (edgeMask[maskIdx] === 1) {
+                    continue; // No modificar
+                }
+                
+                // Calcular diferencia con color de fondo
+                const diffR = Math.abs(data[i] - bgR);
+                const diffG = Math.abs(data[i + 1] - bgG);
+                const diffB = Math.abs(data[i + 2] - bgB);
+                
+                // Si es similar al fondo (marca de agua/texto) - borrar
+                if (diffR < 30 && diffG < 30 && diffB < 30) {
+                    data[i] = bgR;
+                    data[i + 1] = bgG;
+                    data[i + 2] = bgB;
+                }
+                // Si no, es un objeto importante - mantener
+            }
+        }
+        
+        // 4. SUAVIZADO para integrar mejor
+        for (let pass = 0; pass < 2; pass++) {
+            for (let y = area.y; y < area.y + area.height; y++) {
+                for (let x = area.x; x < area.x + area.width; x++) {
+                    const maskIdx = (y - area.y) * area.width + (x - area.x);
+                    if (edgeMask[maskIdx] === 1) continue;
+                    
+                    const i = (y * tempCanvas.width + x) * 4;
+                    
+                    let sumR = 0, sumG = 0, sumB = 0, count = 0;
+                    
+                    for (let ny = Math.max(area.y, y - 1); ny <= Math.min(area.y + area.height - 1, y + 1); ny++) {
+                        for (let nx = Math.max(area.x, x - 1); nx <= Math.min(area.x + area.width - 1, x + 1); nx++) {
+                            const ni = (ny * tempCanvas.width + nx) * 4;
+                            sumR += data[ni];
+                            sumG += data[ni + 1];
+                            sumB += data[ni + 2];
+                            count++;
+                        }
+                    }
+                    
+                    if (count > 0) {
+                        data[i] = sumR / count;
+                        data[i + 1] = sumG / count;
+                        data[i + 2] = sumB / count;
+                    }
+                }
             }
         }
         
