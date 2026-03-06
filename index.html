@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Eliminar Marca de Agua Gratis | Watermark Remover Pro</title>
+    <script src="https://js.stripe.com/v3/"></script>
     <style>
         /* ===== ESTILOS GENERALES ===== */
         * {
@@ -187,6 +188,12 @@
             border-color: #48bb78;
             background: #f0fff4;
             transform: scale(1.02);
+        }
+
+        .upload-section.disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            pointer-events: none;
         }
 
         .upload-icon {
@@ -414,12 +421,18 @@
             box-shadow: 0 10px 20px rgba(102,126,234,0.3);
         }
         
+        .plan-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
         /* ===== FREE COUNTER ===== */
         .free-counter {
             background: #ebf4ff;
             border-radius: 10px;
             padding: 15px;
             margin: 20px 0;
+            border: 2px solid #667eea;
         }
         
         .counter-bar {
@@ -435,18 +448,6 @@
             height: 100%;
             background: linear-gradient(90deg, #48bb78, #38a169);
             transition: width 0.3s;
-        }
-        
-        /* ===== FREE TIMER ===== */
-        .free-timer {
-            position: fixed;
-            bottom: 20px;
-            left: 20px;
-            background: white;
-            padding: 15px 25px;
-            border-radius: 10px;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
-            z-index: 100;
         }
         
         /* ===== PAYMENT MODAL ===== */
@@ -468,6 +469,32 @@
             max-width: 500px;
             width: 90%;
             animation: slideIn 0.3s;
+        }
+        
+        .payment-option {
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 15px 0;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .payment-option:hover {
+            border-color: #667eea;
+            background: #f7fafc;
+        }
+        
+        .payment-option.selected {
+            border-color: #48bb78;
+            background: #f0fff4;
+        }
+        
+        .stripe-card-element {
+            padding: 15px;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            margin: 20px 0;
         }
         
         @keyframes slideIn {
@@ -540,6 +567,17 @@
         .badge-success { background: #c6f6d5; color: #22543d; }
         .badge-info { background: #bee3f8; color: #2c5282; }
         .badge-warning { background: #feebc8; color: #7b341e; }
+
+        /* ===== SUCCESS MESSAGE ===== */
+        .success-message {
+            background: #c6f6d5;
+            color: #22543d;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 20px 0;
+            text-align: center;
+            animation: slideIn 0.3s;
+        }
 
         /* ===== RESPONSIVE ===== */
         @media (max-width: 968px) {
@@ -617,6 +655,16 @@
         </div>
 
         <div class="main-content">
+            <!-- FREE COUNTER (reemplaza al timer) -->
+            <div class="free-counter" id="freeCounter">
+                <strong>Usos gratis restantes:</strong>
+                <span id="counter">3</span> de 3
+                <div class="counter-bar">
+                    <div class="counter-fill" id="counterFill" style="width: 100%"></div>
+                </div>
+                <small style="color: #718096;">Actualiza a Pro para usos ilimitados</small>
+            </div>
+
             <!-- ÁREA DE SUBIDA -->
             <div class="upload-section" id="uploadSection">
                 <div class="upload-icon">📸</div>
@@ -745,38 +793,90 @@
                         <div class="plan-price">€0 <small>/mes</small></div>
                         <h3>Gratis</h3>
                         <ul class="plan-features">
-                            <li>3 ediciones/día</li>
+                            <li>3 ediciones</li>
                             <li>Con publicidad</li>
                             <li class="disabled">Herramientas avanzadas</li>
                         </ul>
-                        <button class="plan-btn" style="background: #a0aec0;" onclick="selectPlan('free')">Actual</button>
+                        <button class="plan-btn" style="background: #a0aec0;" id="freePlanBtn" disabled>Actual</button>
                     </div>
-                    <div class="pricing-card">
+                    <div class="pricing-card popular">
+                        <div class="popular-badge">MÁS POPULAR</div>
                         <div class="plan-price">€9.99 <small>/mes</small></div>
-                        <h3>Pro</h3>
+                        <h3>Pro Mensual</h3>
                         <ul class="plan-features">
                             <li>Ediciones ilimitadas</li>
                             <li>Sin publicidad</li>
-                            <li>Pincel y herramientas</li>
+                            <li>Pincel y herramientas avanzadas</li>
+                            <li>Soporte prioritario</li>
                         </ul>
-                        <button class="plan-btn" onclick="selectPlan('monthly')">Seleccionar</button>
+                        <button class="plan-btn" id="monthlyPlanBtn" onclick="showStripeModal('monthly')">Seleccionar</button>
+                    </div>
+                    <div class="pricing-card">
+                        <div class="plan-price">€99.99 <small>/año</small></div>
+                        <h3>Pro Anual</h3>
+                        <ul class="plan-features">
+                            <li>Ediciones ilimitadas</li>
+                            <li>Sin publicidad</li>
+                            <li>Pincel y herramientas avanzadas</li>
+                            <li>Soporte prioritario 24/7</li>
+                            <li>2 meses gratis</li>
+                        </ul>
+                        <button class="plan-btn" id="annualPlanBtn" onclick="showStripeModal('annual')">Seleccionar</button>
                     </div>
                 </div>
             </section>
         </div>
     </div>
 
-    <!-- TIMER -->
-    <div class="free-timer" id="freeTimer">
-        <strong>Tiempo restante:</strong>
-        <span id="timer">05:00</span>
-    </div>
-
-    <!-- MODAL PAGO -->
+    <!-- MODAL PAGO STRIPE -->
     <div class="payment-modal" id="paymentModal">
         <div class="payment-content">
-            <h3 style="margin-bottom: 20px;">Completar pago</h3>
-            <button class="plan-btn" onclick="processPayment()">Pagar ahora</button>
+            <h2 style="margin-bottom: 20px; color: #2d3748;">💳 Completar pago</h2>
+            <p style="margin-bottom: 20px; color: #718096;">Selecciona tu método de pago</p>
+            
+            <div class="payment-option" id="cardPayment" onclick="selectPaymentMethod('card')">
+                <div style="display: flex; align-items: center; gap: 15px;">
+                    <span style="font-size: 24px;">💳</span>
+                    <div>
+                        <strong>Tarjeta de crédito/débito</strong>
+                        <p style="color: #718096; font-size: 0.9em;">Visa, Mastercard, American Express</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="payment-option" id="googlePayPayment" onclick="selectPaymentMethod('googlepay')">
+                <div style="display: flex; align-items: center; gap: 15px;">
+                    <span style="font-size: 24px;">📱</span>
+                    <div>
+                        <strong>Google Pay</strong>
+                        <p style="color: #718096; font-size: 0.9em;">Pago rápido con Google</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="payment-option" id="applePayPayment" onclick="selectPaymentMethod('applepay')">
+                <div style="display: flex; align-items: center; gap: 15px;">
+                    <span style="font-size: 24px;">🍎</span>
+                    <div>
+                        <strong>Apple Pay</strong>
+                        <p style="color: #718096; font-size: 0.9em;">Pago rápido con Apple</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Elemento de tarjeta de Stripe -->
+            <div id="stripeCardElement" class="stripe-card-element" style="display: none;">
+                <div id="card-element"></div>
+            </div>
+            
+            <div style="display: flex; gap: 10px; margin-top: 30px;">
+                <button class="tool-btn btn-danger" style="flex: 1;" onclick="closePaymentModal()">Cancelar</button>
+                <button class="tool-btn btn-success" style="flex: 2;" id="processPaymentBtn" onclick="processStripePayment()" disabled>Pagar ahora</button>
+            </div>
+            
+            <p style="text-align: center; margin-top: 20px; font-size: 0.8em; color: #a0aec0;">
+                🔒 Pago seguro procesado por Stripe
+            </p>
         </div>
     </div>
 
@@ -795,8 +895,7 @@
         // ===== VARIABLES =====
         let userPlan = localStorage.getItem('userPlan') || 'free';
         let freeEdits = parseInt(localStorage.getItem('freeEdits')) || 0;
-        let freeTimerSeconds = 300;
-        let timerInterval;
+        let maxFreeEdits = 3;
         
         // Canvas
         let originalImage = null;
@@ -806,22 +905,23 @@
         const resultCtx = resultCanvas.getContext('2d');
         
         // Modos
-        let modoActual = 'rectangulo'; // 'rectangulo' o 'pincel'
+        let modoActual = 'rectangulo';
         let isPainting = false;
         let brushSize = 20;
-        let brushPoints = []; // Guarda los puntos pintados
+        let brushPoints = [];
         
-        // Selección rectángulo
+        // Selección
         let isSelecting = false;
         let startX, startY, endX, endY;
         let selection = null;
         
-        // Historia
-        let history = [];
-        let zoom = 1;
-        let rotation = 0;
-        let comparing = false;
-
+        // Stripe
+        let stripe = Stripe('pk_test_TuClavePublicaDeStripe'); // Reemplazar con tu clave real
+        let elements = stripe.elements();
+        let card = null;
+        let selectedPlan = 'monthly';
+        let selectedPaymentMethod = null;
+        
         // Elementos DOM
         const uploadSection = document.getElementById('uploadSection');
         const fileInput = document.getElementById('fileInput');
@@ -838,32 +938,47 @@
         const modoPincel = document.getElementById('modoPincel');
         const brushSizeSlider = document.getElementById('brushSizeSlider');
         const loadingOverlay = document.getElementById('loadingOverlay');
-        const freeTimer = document.getElementById('freeTimer');
+        const freeCounter = document.getElementById('freeCounter');
+        const counterSpan = document.getElementById('counter');
+        const counterFill = document.getElementById('counterFill');
+        const upgradeBtn = document.getElementById('upgradeBtn');
+        const paymentModal = document.getElementById('paymentModal');
+        const processPaymentBtn = document.getElementById('processPaymentBtn');
+        const stripeCardElement = document.getElementById('stripeCardElement');
+        const monthlyPlanBtn = document.getElementById('monthlyPlanBtn');
+        const annualPlanBtn = document.getElementById('annualPlanBtn');
 
         // Inicializar
         if(userPlan !== 'free') {
             document.querySelector('.sidebar-ads').style.display = 'none';
-            freeTimer.style.display = 'none';
+            freeCounter.style.display = 'none';
+            document.getElementById('freePlanBtn').disabled = true;
+            monthlyPlanBtn.disabled = false;
+            annualPlanBtn.disabled = false;
         } else {
-            startFreeTimer();
+            document.getElementById('freePlanBtn').disabled = true;
+            monthlyPlanBtn.disabled = false;
+            annualPlanBtn.disabled = false;
+            updateFreeCounter();
         }
 
         // ===== FUNCIONES =====
-        function startFreeTimer() {
-            timerInterval = setInterval(() => {
-                freeTimerSeconds--;
-                let mins = Math.floor(freeTimerSeconds/60);
-                let secs = freeTimerSeconds%60;
-                document.getElementById('timer').textContent = 
-                    `${mins.toString().padStart(2,'0')}:${secs.toString().padStart(2,'0')}`;
-                if(freeTimerSeconds <= 0) {
-                    clearInterval(timerInterval);
-                    alert('Tiempo agotado');
-                }
-            }, 1000);
+        function updateFreeCounter() {
+            const remaining = maxFreeEdits - freeEdits;
+            counterSpan.textContent = remaining;
+            const percentage = (remaining / maxFreeEdits) * 100;
+            counterFill.style.width = percentage + '%';
+            
+            if(remaining <= 0) {
+                counterSpan.textContent = '0';
+                counterFill.style.width = '0%';
+                uploadBtn.disabled = true;
+                processBtn.disabled = true;
+                uploadSection.classList.add('disabled');
+            }
         }
 
-        function showLoading(msg) {
+        function showLoading() {
             loadingOverlay.style.display = 'flex';
         }
 
@@ -871,17 +986,130 @@
             loadingOverlay.style.display = 'none';
         }
 
-        function addToHistory(data) {
-            history.unshift(data);
-            if(history.length > 10) history.pop();
+        function showPaymentModal() {
+            paymentModal.style.display = 'flex';
+            // Crear elemento de tarjeta si no existe
+            if (!card) {
+                card = elements.create('card', {
+                    style: {
+                        base: {
+                            fontSize: '16px',
+                            color: '#424770',
+                            '::placeholder': {
+                                color: '#aab7c4',
+                            },
+                        },
+                    },
+                });
+                card.mount('#card-element');
+                card.on('change', function(event) {
+                    if (event.complete) {
+                        processPaymentBtn.disabled = false;
+                    } else {
+                        processPaymentBtn.disabled = true;
+                    }
+                });
+            }
+        }
+
+        function closePaymentModal() {
+            paymentModal.style.display = 'none';
+            selectedPaymentMethod = null;
+            document.querySelectorAll('.payment-option').forEach(opt => {
+                opt.classList.remove('selected');
+            });
+            stripeCardElement.style.display = 'none';
+            processPaymentBtn.disabled = true;
+        }
+
+        function selectPaymentMethod(method) {
+            selectedPaymentMethod = method;
+            document.querySelectorAll('.payment-option').forEach(opt => {
+                opt.classList.remove('selected');
+            });
+            document.getElementById(method + 'Payment').classList.add('selected');
+            
+            if (method === 'card') {
+                stripeCardElement.style.display = 'block';
+                processPaymentBtn.disabled = false;
+            } else {
+                stripeCardElement.style.display = 'none';
+                processPaymentBtn.disabled = false;
+            }
+        }
+
+        function showStripeModal(plan) {
+            selectedPlan = plan;
+            showPaymentModal();
+        }
+
+        async function processStripePayment() {
+            showLoading();
+            
+            try {
+                // Simular proceso de pago (en producción, esto se haría en el backend)
+                await new Promise(resolve => setTimeout(resolve, 2000));
+                
+                // Aquí iría la lógica real de Stripe
+                if (selectedPaymentMethod === 'card') {
+                    const {token, error} = await stripe.createToken(card);
+                    if (error) {
+                        alert('Error en el pago: ' + error.message);
+                        hideLoading();
+                        return;
+                    }
+                    // Enviar token al backend para procesar el pago
+                    console.log('Token creado:', token);
+                }
+                
+                // Actualizar plan del usuario
+                userPlan = 'pro';
+                localStorage.setItem('userPlan', 'pro');
+                
+                // Ocultar anuncios y contador
+                document.querySelector('.sidebar-ads').style.display = 'none';
+                freeCounter.style.display = 'none';
+                
+                // Actualizar botones
+                document.getElementById('freePlanBtn').disabled = true;
+                
+                // Mostrar mensaje de éxito
+                alert('¡Pago exitoso! Ahora tienes acceso a Pro.');
+                
+                closePaymentModal();
+                hideLoading();
+                
+                // Recargar para aplicar cambios
+                location.reload();
+                
+            } catch (error) {
+                alert('Error en el pago: ' + error.message);
+                hideLoading();
+            }
         }
 
         // ===== SUBIDA =====
-        uploadBtn.addEventListener('click', () => fileInput.click());
-        uploadSection.addEventListener('click', () => fileInput.click());
+        uploadBtn.addEventListener('click', () => {
+            if(userPlan === 'free' && freeEdits >= maxFreeEdits) {
+                alert('¡Has alcanzado el límite de 3 usos gratis! Actualiza a Pro para continuar.');
+                showPaymentModal();
+                return;
+            }
+            fileInput.click();
+        });
+        
+        uploadSection.addEventListener('click', () => {
+            if(userPlan === 'free' && freeEdits >= maxFreeEdits) {
+                alert('¡Has alcanzado el límite de 3 usos gratis! Actualiza a Pro para continuar.');
+                showPaymentModal();
+                return;
+            }
+            fileInput.click();
+        });
         
         uploadSection.addEventListener('dragover', (e) => {
             e.preventDefault();
+            if(userPlan === 'free' && freeEdits >= maxFreeEdits) return;
             uploadSection.classList.add('dragover');
         });
 
@@ -892,20 +1120,29 @@
         uploadSection.addEventListener('drop', (e) => {
             e.preventDefault();
             uploadSection.classList.remove('dragover');
+            
+            if(userPlan === 'free' && freeEdits >= maxFreeEdits) {
+                alert('¡Has alcanzado el límite de 3 usos gratis! Actualiza a Pro para continuar.');
+                showPaymentModal();
+                return;
+            }
+            
             const file = e.dataTransfer.files[0];
             if(file && file.type.startsWith('image/')) loadImage(file);
         });
 
         fileInput.addEventListener('change', (e) => {
-            if(e.target.files[0]) loadImage(e.target.files[0]);
+            if(e.target.files[0]) {
+                if(userPlan === 'free' && freeEdits >= maxFreeEdits) {
+                    alert('¡Has alcanzado el límite de 3 usos gratis! Actualiza a Pro para continuar.');
+                    showPaymentModal();
+                    return;
+                }
+                loadImage(e.target.files[0]);
+            }
         });
 
         function loadImage(file) {
-            if(userPlan === 'free' && freeEdits >= 3) {
-                alert('Límite de ediciones gratis');
-                return;
-            }
-
             showLoading();
             const reader = new FileReader();
             reader.onload = (e) => {
@@ -948,7 +1185,6 @@
                     downloadBtn.style.display = 'none';
                     resetSelectionBtn.disabled = true;
                     
-                    addToHistory(resultCanvas.toDataURL());
                     hideLoading();
                 };
                 img.src = e.target.result;
@@ -969,6 +1205,11 @@
         });
 
         modoPincel.addEventListener('click', () => {
+            if(userPlan === 'free') {
+                alert('El modo pincel solo está disponible en el plan Pro. ¡Actualiza ahora!');
+                showPaymentModal();
+                return;
+            }
             modoActual = 'pincel';
             modoPincel.classList.add('modo-activo');
             modoRectangulo.classList.remove('modo-activo');
@@ -1005,10 +1246,8 @@
         function paint(x, y) {
             if(!isPainting) return;
             
-            // Guardar punto
             brushPoints.push({x, y});
             
-            // Dibujar círculo en canvas para feedback visual
             ctx.save();
             ctx.beginPath();
             ctx.arc(x, y, brushSize/2, 0, Math.PI * 2);
@@ -1019,7 +1258,6 @@
             ctx.stroke();
             ctx.restore();
             
-            // Habilitar botón procesar
             processBtn.disabled = false;
             resetSelectionBtn.disabled = false;
         }
@@ -1140,8 +1378,14 @@
             if(!originalImage) return;
             
             if(userPlan === 'free') {
+                if(freeEdits >= maxFreeEdits) {
+                    alert('Límite de usos gratis alcanzado');
+                    showPaymentModal();
+                    return;
+                }
                 freeEdits++;
                 localStorage.setItem('freeEdits', freeEdits);
+                updateFreeCounter();
             }
             
             showLoading();
@@ -1158,7 +1402,6 @@
                 const data = imageData.data;
                 
                 if(modoActual === 'rectangulo' && selection) {
-                    // MODO RECTÁNGULO
                     const area = {
                         x: Math.floor(selection.x),
                         y: Math.floor(selection.y),
@@ -1166,7 +1409,6 @@
                         height: Math.floor(selection.height)
                     };
                     
-                    // Detectar color de fondo
                     let bgR = 0, bgG = 0, bgB = 0, bgCount = 0;
                     for(let y = area.y; y <= area.y + area.height; y++) {
                         for(let x = area.x; x <= area.x + area.width; x++) {
@@ -1187,7 +1429,6 @@
                         bgB = Math.floor(bgB / bgCount);
                     }
                     
-                    // Rellenar interior
                     for(let y = area.y + 2; y < area.y + area.height - 2; y++) {
                         for(let x = area.x + 2; x < area.x + area.width - 2; x++) {
                             const i = (y * tempCanvas.width + x) * 4;
@@ -1198,8 +1439,6 @@
                     }
                     
                 } else if(modoActual === 'pincel' && brushPoints.length > 0) {
-                    // MODO PINCEL
-                    // Crear máscara de puntos pintados
                     const mask = new Uint8Array(tempCanvas.width * tempCanvas.height);
                     
                     brushPoints.forEach(point => {
@@ -1217,7 +1456,6 @@
                         }
                     });
                     
-                    // Detectar color de fondo (alrededor de los puntos)
                     let bgR = 0, bgG = 0, bgB = 0, bgCount = 0;
                     
                     for(let i = 0; i < mask.length; i++) {
@@ -1225,7 +1463,6 @@
                             const y = Math.floor(i / tempCanvas.width);
                             const x = i % tempCanvas.width;
                             
-                            // Buscar alrededor del punto
                             for(let ny = Math.max(0, y - 5); ny <= Math.min(tempCanvas.height - 1, y + 5); ny++) {
                                 for(let nx = Math.max(0, x - 5); nx <= Math.min(tempCanvas.width - 1, x + 5); nx++) {
                                     const idx = ny * tempCanvas.width + nx;
@@ -1247,7 +1484,6 @@
                         bgB = Math.floor(bgB / bgCount);
                     }
                     
-                    // Rellenar puntos pintados
                     for(let i = 0; i < mask.length; i++) {
                         if(mask[i] === 1) {
                             const di = i * 4;
@@ -1264,7 +1500,6 @@
                 resultCtx.drawImage(tempCanvas, 0, 0);
                 
                 downloadBtn.style.display = 'inline-block';
-                addToHistory(resultCanvas.toDataURL());
                 hideLoading();
                 
             }, 1500);
@@ -1278,33 +1513,73 @@
             link.click();
         });
 
-        // ===== OTRAS FUNCIONES =====
-        zoomInBtn.addEventListener('click', () => {
+        // ===== BOTONES DE HERRAMIENTAS =====
+        document.getElementById('zoomInBtn').addEventListener('click', () => {
+            let zoom = parseFloat(originalCanvas.style.zoom || 1);
             zoom = Math.min(3, zoom + 0.2);
-            originalCanvas.style.transform = `scale(${zoom})`;
-            resultCanvas.style.transform = `scale(${zoom})`;
+            originalCanvas.style.zoom = zoom;
+            resultCanvas.style.zoom = zoom;
         });
 
-        zoomOutBtn.addEventListener('click', () => {
+        document.getElementById('zoomOutBtn').addEventListener('click', () => {
+            let zoom = parseFloat(originalCanvas.style.zoom || 1);
             zoom = Math.max(0.5, zoom - 0.2);
-            originalCanvas.style.transform = `scale(${zoom})`;
-            resultCanvas.style.transform = `scale(${zoom})`;
+            originalCanvas.style.zoom = zoom;
+            resultCanvas.style.zoom = zoom;
         });
 
-        clearBtn.addEventListener('click', () => {
-            if(confirm('¿Limpiar todo?')) location.reload();
+        document.getElementById('rotateBtn').addEventListener('click', () => {
+            let rotation = parseInt(originalCanvas.dataset.rotation || 0);
+            rotation = (rotation + 90) % 360;
+            originalCanvas.dataset.rotation = rotation;
+            resultCanvas.dataset.rotation = rotation;
+            originalCanvas.style.transform = `rotate(${rotation}deg)`;
+            resultCanvas.style.transform = `rotate(${rotation}deg)`;
         });
 
-        window.selectPlan = (plan) => {
-            if(plan !== 'free') document.getElementById('paymentModal').style.display = 'flex';
-        };
+        document.getElementById('enhanceBtn').addEventListener('click', () => {
+            if(userPlan === 'free') {
+                alert('Esta función solo está disponible en el plan Pro. ¡Actualiza ahora!');
+                showPaymentModal();
+                return;
+            }
+            alert('Función de mejora de imagen (simulada)');
+        });
 
-        window.processPayment = () => {
-            alert('Pago simulado');
-            userPlan = 'pro';
-            localStorage.setItem('userPlan', 'pro');
-            location.reload();
-        };
+        let comparing = false;
+        document.getElementById('compareBtn').addEventListener('click', () => {
+            comparing = !comparing;
+            if(comparing) {
+                originalCanvas.style.opacity = '0.5';
+                resultCanvas.style.opacity = '1';
+            } else {
+                originalCanvas.style.opacity = '1';
+                resultCanvas.style.opacity = '1';
+            }
+        });
+
+        document.getElementById('clearBtn').addEventListener('click', () => {
+            if(confirm('¿Limpiar todo? Se perderán los cambios no guardados.')) {
+                location.reload();
+            }
+        });
+
+        document.getElementById('clearHistoryBtn').addEventListener('click', () => {
+            document.getElementById('historyList').innerHTML = '';
+        });
+
+        // ===== UPGRADE BUTTON =====
+        upgradeBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            showPaymentModal();
+        });
+
+        // ===== CIERRE DE MODAL =====
+        window.onclick = function(event) {
+            if (event.target == paymentModal) {
+                closePaymentModal();
+            }
+        }
     </script>
 </body>
 </html>
