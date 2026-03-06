@@ -107,6 +107,28 @@
             margin-bottom: 20px;
         }
         
+        .close-ad {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 20px;
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+        }
+        
+        .close-ad:hover {
+            background: rgba(255,255,255,0.2);
+        }
+        
         .sidebar-ads {
             position: fixed;
             right: 20px;
@@ -228,6 +250,11 @@
             max-width: 100%;
             max-height: 100%;
             object-fit: contain;
+            cursor: default;
+        }
+
+        .image-wrapper canvas.selecting {
+            cursor: crosshair !important;
         }
 
         .card-footer {
@@ -394,7 +421,8 @@
             height: 100%;
             object-fit: cover;
         }
-                /* ===== PRICING PLANS (MONETIZACIÓN) ===== */
+        
+        /* ===== PRICING PLANS (MONETIZACIÓN) ===== */
         .pricing-section {
             padding: 60px 20px;
             background: linear-gradient(135deg, #f7fafc, #edf2f7);
@@ -433,12 +461,12 @@
         
         .popular-badge {
             position: absolute;
-            top: 20px;
-            right: -30px;
+            top: -12px;
+            right: 20px;
             background: linear-gradient(135deg, #f6ad55, #ed8936);
             color: white;
-            padding: 8px 40px;
-            transform: rotate(45deg);
+            padding: 5px 20px;
+            border-radius: 20px;
             font-size: 0.8em;
         }
         
@@ -519,7 +547,7 @@
             bottom: 20px;
             left: 20px;
             background: white;
-            padding: 15px;
+            padding: 15px 25px;
             border-radius: 10px;
             box-shadow: 0 5px 20px rgba(0,0,0,0.2);
             z-index: 100;
@@ -673,7 +701,7 @@
     <!-- BANNER PUBLICIDAD (MONETIZACIÓN) -->
     <div class="ad-banner" id="adBanner">
         <span>🔥 50% OFF en plan anual - Oferta por tiempo limitado</span>
-        <button class="close-ad" onclick="this.parentElement.style.display='none'" style="background: none; border: none; color: white; font-size: 20px; position: absolute; right: 15px; top: 50%; transform: translateY(-50%); cursor: pointer;">✕</button>
+        <button class="close-ad" onclick="this.parentElement.style.display='none'">✕</button>
     </div>
 
     <!-- ANUNCIOS LATERALES (MONETIZACIÓN) -->
@@ -682,13 +710,13 @@
             <div style="font-size: 10px; color: #a0aec0; margin-bottom: 5px;">ANUNCIO</div>
             <div style="background: linear-gradient(135deg, #667eea, #764ba2); height: 60px; border-radius: 5px; margin-bottom: 10px;"></div>
             <p style="margin: 10px 0; font-size: 12px;">Editor de fotos Pro</p>
-            <button class="plan-btn" style="padding: 5px; font-size: 12px;">Probar</button>
+            <button class="plan-btn" style="padding: 5px; font-size: 12px;" onclick="alert('Anuncio de ejemplo')">Probar</button>
         </div>
         <div class="sidebar-ad">
             <div style="font-size: 10px; color: #a0aec0; margin-bottom: 5px;">ANUNCIO</div>
             <div style="background: linear-gradient(135deg, #48bb78, #38a169); height: 60px; border-radius: 5px; margin-bottom: 10px;"></div>
             <p style="margin: 10px 0; font-size: 12px;">Eliminar fondos</p>
-            <button class="plan-btn" style="padding: 5px; font-size: 12px;">Gratis</button>
+            <button class="plan-btn" style="padding: 5px; font-size: 12px;" onclick="alert('Anuncio de ejemplo')">Gratis</button>
         </div>
     </div>
 
@@ -857,7 +885,8 @@
                 </div>
                 <div class="history-list" id="historyList"></div>
             </div>
-                                    <!-- SECCIÓN DE PLANES (MONETIZACIÓN) -->
+            
+            <!-- SECCIÓN DE PLANES (MONETIZACIÓN) -->
             <section class="pricing-section" id="pricing">
                 <h2 style="text-align: center; font-size: 2.5em; margin-bottom: 50px;">Planes Flexibles</h2>
                 <div class="pricing-grid">
@@ -1003,7 +1032,7 @@
         // VARIABLES DE MONETIZACIÓN
         let userPlan = localStorage.getItem('userPlan') || 'free';
         let freeEdits = parseInt(localStorage.getItem('freeEdits')) || 0;
-        let freeTimer = 300; // 5 minutos en segundos
+        let freeTimerSeconds = 300; // 5 minutos en segundos
         let timerInterval;
         
         // VARIABLES DE LA APP
@@ -1013,10 +1042,13 @@
         const resultCanvas = document.getElementById('resultCanvas');
         const ctx = originalCanvas.getContext('2d');
         const resultCtx = resultCanvas.getContext('2d');
+        
+        // Variables para selección
         let isSelecting = false;
         let startX, startY, endX, endY;
         let selection = null;
-        let isDragging = false;
+        let selectionListenersAttached = false;
+        
         let zoom = 1;
         let rotation = 0;
         let history = [];
@@ -1024,11 +1056,6 @@
         let intensity = 50;
         let brushSize = 20;
         let smoothness = 30;
-        let config = {
-            quality: 'high',
-            mode: 'watermark',
-            preserveDetails: true
-        };
         let comparing = false;
 
         // ELEMENTOS DEL DOM
@@ -1058,14 +1085,14 @@
         const smoothSlider = document.getElementById('smoothSlider');
         const upgradeBtn = document.getElementById('upgradeBtn');
         const adBanner = document.getElementById('adBanner');
-        const freeTimer = document.getElementById('freeTimer');
+        const freeTimerElement = document.getElementById('freeTimer');
         const paymentModal = document.getElementById('paymentModal');
 
         // INICIALIZAR SEGÚN PLAN
         if(userPlan !== 'free') {
             adBanner.style.display = 'none';
             document.querySelector('.sidebar-ads').style.display = 'none';
-            freeTimer.style.display = 'none';
+            freeTimerElement.style.display = 'none';
         } else {
             startFreeTimer();
             updateFreeCounter();
@@ -1074,13 +1101,13 @@
         // FUNCIONES DE MONETIZACIÓN
         function startFreeTimer() {
             timerInterval = setInterval(() => {
-                freeTimer--;
-                let mins = Math.floor(freeTimer/60);
-                let secs = freeTimer%60;
+                freeTimerSeconds--;
+                let mins = Math.floor(freeTimerSeconds/60);
+                let secs = freeTimerSeconds%60;
                 document.getElementById('timer').textContent = 
                     `${mins.toString().padStart(2,'0')}:${secs.toString().padStart(2,'0')}`;
                 
-                if(freeTimer <= 0) {
+                if(freeTimerSeconds <= 0) {
                     clearInterval(timerInterval);
                     alert('¡Tiempo gratis agotado! Actualiza a Pro para continuar');
                     document.getElementById('pricing').scrollIntoView({behavior: 'smooth'});
@@ -1088,12 +1115,12 @@
             }, 1000);
         }
         
-        function selectPlan(plan) {
+        window.selectPlan = function(plan) {
             if(plan === 'free') return;
             paymentModal.style.display = 'flex';
         }
         
-        function processPayment() {
+        window.processPayment = function() {
             alert('Pago procesado (simulación). ¡Gracias por tu compra!');
             userPlan = 'pro';
             localStorage.setItem('userPlan', 'pro');
@@ -1152,8 +1179,12 @@
             img.src = imageData;
         }
 
-        // EVENT LISTENERS
-        uploadBtn.addEventListener('click', () => fileInput.click());
+        // EVENT LISTENERS PARA SUBIDA
+        uploadBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            fileInput.click();
+        });
+        
         uploadSection.addEventListener('click', () => fileInput.click());
         
         uploadSection.addEventListener('dragover', (e) => {
@@ -1240,42 +1271,68 @@
             reader.readAsDataURL(file);
         }
 
+        // FUNCIÓN DE SELECCIÓN MEJORADA
         selectAreaBtn.addEventListener('click', () => {
             if (!originalImage) return;
             
+            // Remover listeners anteriores si existen
+            if (selectionListenersAttached) {
+                originalCanvas.removeEventListener('mousedown', handleSelectionMouseDown);
+                originalCanvas.removeEventListener('mousemove', handleSelectionMouseMove);
+                originalCanvas.removeEventListener('mouseup', handleSelectionMouseUp);
+            }
+            
             isSelecting = true;
-            originalCanvas.style.cursor = 'crosshair';
+            originalCanvas.classList.add('selecting');
             resetSelectionBtn.disabled = false;
             
             const rect = originalCanvas.getBoundingClientRect();
             const scaleX = originalCanvas.width / rect.width;
             const scaleY = originalCanvas.height / rect.height;
             
-            function handleMouseDown(e) {
+            function handleSelectionMouseDown(e) {
+                e.preventDefault();
                 if (!isSelecting) return;
-                isDragging = true;
+                
                 const x = (e.clientX - rect.left) * scaleX;
                 const y = (e.clientY - rect.top) * scaleY;
-                startX = Math.max(0, Math.min(x, originalCanvas.width));
-                startY = Math.max(0, Math.min(y, originalCanvas.height));
+                
+                if (x >= 0 && x <= originalCanvas.width && y >= 0 && y <= originalCanvas.height) {
+                    startX = x;
+                    startY = y;
+                    endX = x;
+                    endY = y;
+                    selectionListenersAttached = true;
+                }
             }
             
-            function handleMouseMove(e) {
-                if (!isDragging || !isSelecting) return;
+            function handleSelectionMouseMove(e) {
+                if (startX === undefined) return;
+                
                 const x = (e.clientX - rect.left) * scaleX;
                 const y = (e.clientY - rect.top) * scaleY;
+                
                 endX = Math.max(0, Math.min(x, originalCanvas.width));
                 endY = Math.max(0, Math.min(y, originalCanvas.height));
                 
-                drawSelection();
+                // Redibujar imagen original
+                ctx.clearRect(0, 0, originalCanvas.width, originalCanvas.height);
+                ctx.drawImage(originalImage, 0, 0, originalCanvas.width, originalCanvas.height);
+                
+                // Dibujar rectángulo de selección
+                ctx.strokeStyle = '#ff0000';
+                ctx.lineWidth = 2;
+                ctx.setLineDash([5, 3]);
+                ctx.strokeRect(startX, startY, endX - startX, endY - startY);
+                
+                // Relleno semitransparente
+                ctx.fillStyle = 'rgba(255, 0, 0, 0.1)';
+                ctx.fillRect(startX, startY, endX - startX, endY - startY);
             }
             
-            function handleMouseUp() {
-                if (isDragging && isSelecting) {
-                    isDragging = false;
-                    isSelecting = false;
-                    originalCanvas.style.cursor = 'default';
-                    
+            function handleSelectionMouseUp() {
+                if (startX !== undefined && endX !== undefined) {
+                    // Guardar selección
                     selection = {
                         x: Math.min(startX, endX),
                         y: Math.min(startY, endY),
@@ -1283,43 +1340,43 @@
                         height: Math.abs(endY - startY)
                     };
                     
+                    // Validar tamaño mínimo
                     if (selection.width < 5 || selection.height < 5) {
                         selection = null;
                         processBtn.disabled = true;
                         resetSelectionBtn.disabled = true;
+                        
+                        // Restaurar imagen original
+                        ctx.clearRect(0, 0, originalCanvas.width, originalCanvas.height);
+                        ctx.drawImage(originalImage, 0, 0, originalCanvas.width, originalCanvas.height);
                     } else {
                         processBtn.disabled = false;
-                        drawSelection(true);
+                        
+                        // Dibujar selección final
+                        ctx.clearRect(0, 0, originalCanvas.width, originalCanvas.height);
+                        ctx.drawImage(originalImage, 0, 0, originalCanvas.width, originalCanvas.height);
+                        ctx.strokeStyle = '#00ff00';
+                        ctx.lineWidth = 2;
+                        ctx.setLineDash([]);
+                        ctx.strokeRect(selection.x, selection.y, selection.width, selection.height);
                     }
                     
-                    originalCanvas.removeEventListener('mousedown', handleMouseDown);
-                    originalCanvas.removeEventListener('mousemove', handleMouseMove);
-                    originalCanvas.removeEventListener('mouseup', handleMouseUp);
+                    // Resetear variables
+                    startX = undefined;
+                    startY = undefined;
+                    endX = undefined;
+                    endY = undefined;
+                    isSelecting = false;
+                    originalCanvas.classList.remove('selecting');
                 }
             }
             
-            function drawSelection(final = false) {
-                ctx.clearRect(0, 0, originalCanvas.width, originalCanvas.height);
-                ctx.drawImage(originalImage, 0, 0, originalCanvas.width, originalCanvas.height);
-                
-                if (final && selection) {
-                    ctx.strokeStyle = '#00ff00';
-                    ctx.lineWidth = 2;
-                    ctx.setLineDash([]);
-                    ctx.strokeRect(selection.x, selection.y, selection.width, selection.height);
-                } else {
-                    ctx.strokeStyle = '#ff0000';
-                    ctx.lineWidth = 2;
-                    ctx.setLineDash([5, 3]);
-                    ctx.strokeRect(startX, startY, endX - startX, endY - startY);
-                    ctx.fillStyle = 'rgba(255, 0, 0, 0.1)';
-                    ctx.fillRect(startX, startY, endX - startX, endY - startY);
-                }
-            }
+            originalCanvas.addEventListener('mousedown', handleSelectionMouseDown);
+            originalCanvas.addEventListener('mousemove', handleSelectionMouseMove);
+            originalCanvas.addEventListener('mouseup', handleSelectionMouseUp);
             
-            originalCanvas.addEventListener('mousedown', handleMouseDown);
-            originalCanvas.addEventListener('mousemove', handleMouseMove);
-            originalCanvas.addEventListener('mouseup', handleMouseUp);
+            // Guardar referencia para poder remover después
+            selectionListenersAttached = true;
         });
 
         resetSelectionBtn.addEventListener('click', () => {
@@ -1328,6 +1385,9 @@
             resetSelectionBtn.disabled = true;
             ctx.clearRect(0, 0, originalCanvas.width, originalCanvas.height);
             ctx.drawImage(originalImage, 0, 0, originalCanvas.width, originalCanvas.height);
+            
+            // Remover clase de selección
+            originalCanvas.classList.remove('selecting');
         });
 
         processBtn.addEventListener('click', () => {
@@ -1343,6 +1403,7 @@
             showLoading('Aplicando algoritmos avanzados...');
             processBtn.disabled = true;
             
+            // Simular procesamiento (en una app real, aquí iría el algoritmo real)
             setTimeout(() => {
                 const tempCanvas = document.createElement('canvas');
                 tempCanvas.width = originalCanvas.width;
@@ -1360,15 +1421,16 @@
                     height: Math.floor(selection.height)
                 };
                 
-                // APLICAR RELLENO SIMPLE POR AHORA
+                // APLICAR RELLENO SIMPLE (simulación de eliminación)
                 for (let y = area.y; y < area.y + area.height; y++) {
                     for (let x = area.x; x < area.x + area.width; x++) {
                         const i = (y * tempCanvas.width + x) * 4;
                         
                         let r = 0, g = 0, b = 0, count = 0;
                         
-                        for (let ny = Math.max(0, y - 2); ny <= Math.min(tempCanvas.height - 1, y + 2); ny++) {
-                            for (let nx = Math.max(0, x - 2); nx <= Math.min(tempCanvas.width - 1, x + 2); nx++) {
+                        // Tomar píxeles del borde para rellenar
+                        for (let ny = Math.max(0, y - 3); ny <= Math.min(tempCanvas.height - 1, y + 3); ny++) {
+                            for (let nx = Math.max(0, x - 3); nx <= Math.min(tempCanvas.width - 1, x + 3); nx++) {
                                 if (nx < area.x || nx >= area.x + area.width || 
                                     ny < area.y || ny >= area.y + area.height) {
                                     const ni = (ny * tempCanvas.width + nx) * 4;
@@ -1411,11 +1473,13 @@
         zoomInBtn.addEventListener('click', () => {
             zoom = Math.min(3, zoom + 0.2);
             originalCanvas.style.transform = `scale(${zoom})`;
+            resultCanvas.style.transform = `scale(${zoom})`;
         });
 
         zoomOutBtn.addEventListener('click', () => {
             zoom = Math.max(0.5, zoom - 0.2);
             originalCanvas.style.transform = `scale(${zoom})`;
+            resultCanvas.style.transform = `scale(${zoom})`;
         });
 
         rotateBtn.addEventListener('click', () => {
@@ -1451,6 +1515,7 @@
                 const imageData = resultCtx.getImageData(0, 0, resultCanvas.width, resultCanvas.height);
                 const data = imageData.data;
                 
+                // Mejorar contraste y brillo
                 for (let i = 0; i < data.length; i += 4) {
                     data[i] = Math.min(255, Math.max(0, data[i] * 1.1));
                     data[i + 1] = Math.min(255, Math.max(0, data[i + 1] * 1.1));
